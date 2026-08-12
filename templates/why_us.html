@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Why Us{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Why Us</span></div>
+    <h1>Premium engineering. Honest pricing. Lifelong support.</h1>
+    <p>Here's why builders, architects and facility managers across India choose {{ cfg.COMPANY_NAME }}.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid g-3">
+      {% for w in why_us %}
+      <div class="card reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="card__icon">{{ icon(w.icon) }}</div>
+        <h3>{{ w.title }}</h3>
+        <p>{{ w.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--navy section--tight">
+  <div class="container">
+    <div class="stats stats--onink reveal">
+      {% for s in stats %}<div class="stat"><b>{{ s.value }}</b><span>{{ s.label }}</span></div>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Comparison -->
+<section class="section">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">The Silex Difference</span>
+      <h2 class="section-title">More than just a lift</h2>
+    </div>
+    <div class="grid g-2 mt-m">
+      <div class="card reveal">
+        <h3>What you get with Silex</h3>
+        <ul class="list-check mt-s">
+          <li>{{ icon('check') }}<span>ISO-certified, in-house manufacturing &amp; R&amp;D</span></li>
+          <li>{{ icon('check') }}<span>Genuine components from global leaders</span></li>
+          <li>{{ icon('check') }}<span>Transparent pricing — silky motion, affordable cost</span></li>
+          <li>{{ icon('check') }}<span>Local branches for fast install &amp; service</span></li>
+          <li>{{ icon('check') }}<span>24×7 support with Automatic Rescue Device</span></li>
+        </ul>
+      </div>
+      <div class="card reveal" data-delay="1">
+        <h3>Our promise on every project</h3>
+        <ul class="list-check mt-s">
+          <li>{{ icon('check') }}<span>On-time installation by qualified engineers</span></li>
+          <li>{{ icon('check') }}<span>Safety and compliance built in, not bolted on</span></li>
+          <li>{{ icon('check') }}<span>Finishes tailored to your building's character</span></li>
+          <li>{{ icon('check') }}<span>Long service life with easy maintenance</span></li>
+          <li>{{ icon('check') }}<span>A relationship that lasts beyond handover</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section section--ink">
+  <div class="container">
+    <div class="head-center"><span class="eyebrow">Client Voices</span><h2 class="section-title">Trusted, floor after floor</h2></div>
+    <div class="grid g-3 mt-m">
+      {% for t in testimonials %}
+      <div class="quote reveal" data-delay="{{ loop.index }}">
+        <div class="quote__mark">&ldquo;</div>
+        <p>{{ t.quote }}</p>
+        <div class="quote__who">
+          <div class="quote__ava">{{ t.name[0] }}</div>
+          <div><b>{{ t.name }}</b><span>{{ t.role }}</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Partners -->
+<section class="section section--tight">
+  <div class="container head-center">
+    <span class="eyebrow" style="justify-content:center">Technically Associated With</span>
+    <div class="chips mt-s" style="justify-content:center">
+      {% for p in partners %}<span class="chip">{{ p }}</span>{% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

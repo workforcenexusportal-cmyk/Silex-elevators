@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+{% from "_icons.html" import icon, logo_mark %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ cfg.COMPANY_NAME }}{% endblock %} · {{ cfg.COMPANY_NAME }}</title>
+  <meta name="description" content="{% block meta_desc %}Silex Elevator — ISO 9001:2008 certified manufacturer of MRL, passenger, capsule, hospital, goods & hydraulic elevators across India. Enjoy silky motion at affordable cost.{% endblock %}">
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  <!-- Open Graph / social -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ cfg.COMPANY_NAME }}">
+  <meta property="og:title" content="{{ self.title() }}">
+  <meta property="og:description" content="{{ self.meta_desc() }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:image" content="{{ url_for('static', filename='img/hero.jpg', _external=True) }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ self.title() }}">
+  <meta name="twitter:description" content="{{ self.meta_desc() }}">
+  <meta name="twitter:image" content="{{ url_for('static', filename='img/hero.jpg', _external=True) }}">
+
+  <meta name="theme-color" content="#0F1E3D">
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo.png') }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=4">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 2l19 11v22L24 46 5 35V13z' fill='%230f1e3d'/><path d='M31 17c-2-2-5-3-8-2.6-3 .4-4.6 2.4-4.4 4.6.2 2.2 2 3.2 5.4 4 3.4.8 4.2 1.6 4.3 2.7.1 1.3-1.3 2.4-3.6 2.5-2.4.1-4.2-.8-5.7-2.3' fill='none' stroke='%23c9a24b' stroke-width='3.4' stroke-linecap='round'/></svg>">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "{{ cfg.COMPANY_NAME }}",
+    "image": "{{ url_for('static', filename='img/logo.png', _external=True) }}",
+    "description": "{{ cfg.CERTIFICATION }} manufacturer of MRL, passenger, capsule, hospital, goods and hydraulic elevators.",
+    "telephone": "{{ cfg.PHONE }}",
+    "email": "{{ cfg.EMAIL }}",
+    "url": "{{ cfg.SITE_URL }}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "4th Floor, Elifenta Business Hub, Signapor",
+      "addressLocality": "Katargam, Surat",
+      "addressRegion": "Gujarat",
+      "postalCode": "395004",
+      "addressCountry": "IN"
+    },
+    "slogan": "{{ cfg.COMPANY_TAGLINE }}"
+  }
+  </script>
+
+  {% if cfg.GA_MEASUREMENT_ID %}
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ cfg.GA_MEASUREMENT_ID }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ cfg.GA_MEASUREMENT_ID }}');
+  </script>
+  {% endif %}
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="{{ url_for('home') }}" aria-label="{{ cfg.COMPANY_NAME }} home">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="{{ cfg.COMPANY_NAME }}">
+        <span class="brand__txt">SILEX<small>ELEVATOR</small></span>
+      </a>
+      <nav class="nav__links" id="navLinks">
+        <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' }}">Home</a>
+
+        <div class="has-drop">
+          <button type="button" class="drop-toggle {{ 'active' if request.endpoint in ['products','product_detail'] }}">Products {{ icon('arrow') }}</button>
+          <div class="drop">
+            <a href="{{ url_for('products') }}"><b>All Products</b></a>
+            {% for p in nav_products %}
+            <a href="{{ url_for('product_detail', slug=p.slug) }}">{{ p.name.split('—')[0].split('/')[0]|trim }}</a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="has-drop">
+          <button type="button" class="drop-toggle {{ 'active' if request.endpoint in ['solutions','solution_detail'] }}">Solutions {{ icon('arrow') }}</button>
+          <div class="drop">
+            <a href="{{ url_for('solutions') }}"><b>All Solutions</b></a>
+            <a href="{{ url_for('solution_detail', slug='residential') }}">Residential</a>
+            <a href="{{ url_for('solution_detail', slug='commercial') }}">Office &amp; Commercial</a>
+            <a href="{{ url_for('solution_detail', slug='hotel') }}">Hotel &amp; Hospitality</a>
+            <a href="{{ url_for('solution_detail', slug='retail') }}">Retail &amp; Malls</a>
+            <a href="{{ url_for('solution_detail', slug='healthcare') }}">Healthcare</a>
+            <a href="{{ url_for('solution_detail', slug='public-transport') }}">Public &amp; Infrastructure</a>
+          </div>
+        </div>
+
+        <div class="has-drop">
+          <button type="button" class="drop-toggle {{ 'active' if request.endpoint in ['services','amc','modernization','technology'] }}">Services {{ icon('arrow') }}</button>
+          <div class="drop">
+            <a href="{{ url_for('services') }}">Products &amp; Installation</a>
+            <a href="{{ url_for('amc') }}">AMC &amp; Maintenance</a>
+            <a href="{{ url_for('modernization') }}">Modernization</a>
+            <a href="{{ url_for('technology') }}">Technology &amp; Innovations</a>
+          </div>
+        </div>
+
+        <div class="has-drop">
+          <button type="button" class="drop-toggle {{ 'active' if request.endpoint in ['about','why_us','projects','careers','faq','blog','blog_post'] }}">Company {{ icon('arrow') }}</button>
+          <div class="drop">
+            <a href="{{ url_for('about') }}">About Us</a>
+            <a href="{{ url_for('why_us') }}">Why Us</a>
+            <a href="{{ url_for('projects') }}">Projects</a>
+            <a href="{{ url_for('careers') }}">Careers</a>
+            <a href="{{ url_for('blog') }}">Blog</a>
+            <a href="{{ url_for('faq') }}">FAQ</a>
+          </div>
+        </div>
+
+        <a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' }}">Contact</a>
+        <a href="{{ url_for('search') }}" class="nav__search" aria-label="Search">{{ icon('search') }}</a>
+        <a href="{{ url_for('contact') }}" class="btn btn--gold btn--sm nav__cta-m">Get a Quote</a>
+      </nav>
+      <a href="{{ url_for('contact') }}" class="btn btn--gold btn--sm nav__cta">Get a Quote {{ icon('arrow') }}</a>
+      <button class="nav__toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a class="brand--foot" href="{{ url_for('home') }}" aria-label="{{ cfg.COMPANY_NAME }}">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="{{ cfg.COMPANY_NAME }}">
+          </a>
+          <p>{{ cfg.COMPANY_TAGLINE }}. {{ cfg.CERTIFICATION }} manufacturer, supplier &amp; exporter of premium elevators — proudly engineered in India.</p>
+          <a href="{{ url_for('brochure') }}" class="btn btn--line btn--sm" style="margin-top:18px">{{ icon('arrow') }} Download Brochure (PDF)</a>
+          <div class="social">
+            {% for s in social_links %}
+            <a href="{{ s.url }}" target="_blank" rel="noopener" aria-label="{{ s.name }}">{{ icon(s.icon) }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul class="footer__links">
+            <li><a href="{{ url_for('about') }}">About Us</a></li>
+            <li><a href="{{ url_for('products') }}">Products</a></li>
+            <li><a href="{{ url_for('solutions') }}">Solutions</a></li>
+            <li><a href="{{ url_for('projects') }}">Projects</a></li>
+            <li><a href="{{ url_for('why_us') }}">Why Us</a></li>
+            <li><a href="{{ url_for('blog') }}">Blog</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Services</h4>
+          <ul class="footer__links">
+            <li><a href="{{ url_for('services') }}">Installation</a></li>
+            <li><a href="{{ url_for('amc') }}">AMC &amp; Maintenance</a></li>
+            <li><a href="{{ url_for('modernization') }}">Modernization</a></li>
+            <li><a href="{{ url_for('technology') }}">Technology</a></li>
+            <li><a href="{{ url_for('careers') }}">Careers</a></li>
+            <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Get in Touch</h4>
+          <ul class="footer__contact">
+            <li>{{ icon('pin') }}<span>{{ cfg.ADDRESS }}</span></li>
+            <li>{{ icon('phone') }}<a href="tel:{{ cfg.PHONE|replace(' ','') }}">{{ cfg.PHONE }}</a></li>
+            <li>{{ icon('mail') }}<a href="mailto:{{ cfg.EMAIL }}">{{ cfg.EMAIL }}</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© {{ current_year }} {{ cfg.COMPANY_NAME }}. All rights reserved.</span>
+        <span class="footer__legal">
+          <a href="{{ url_for('terms') }}">Terms &amp; Conditions</a>
+          <a href="{{ url_for('privacy') }}">Privacy Notice</a>
+        </span>
+        <span>{{ cfg.CERTIFICATION }} · Made in India 🇮🇳</span>
+      </div>
+    </div>
+  </footer>
+
+  <a class="wa" href="https://wa.me/{{ cfg.WHATSAPP }}?text={{ ('Hi ' ~ cfg.COMPANY_NAME ~ ', I would like a quote for an elevator.') | urlencode }}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.8 4.9-1.3A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.2-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.2-.3.5-.4.7-.4h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.5c-.2.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.4.1.6-.1l.7-.9c.2-.3.4-.2.6-.1l2 .9c.3.1.4.2.5.3.1.2.1.6-.1 1.3z"/></svg>
+  </a>
+
+  <!-- Cookie consent -->
+  <div class="cookie" id="cookieBar" hidden>
+    <p>We use cookies to improve your experience and analyse site traffic. See our <a href="{{ url_for('privacy') }}">Privacy Notice</a>.</p>
+    <div class="cookie__btns">
+      <button type="button" class="btn btn--line btn--sm" id="cookieDecline">Decline</button>
+      <button type="button" class="btn btn--gold btn--sm" id="cookieAccept">Accept</button>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=4" defer></script>
+</body>
+</html>

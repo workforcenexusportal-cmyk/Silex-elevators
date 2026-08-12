@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}FAQ{% endblock %}
+{% block meta_desc %}Frequently asked questions about Silex elevators — MRL lifts, installation time, AMC plans, safety, modernization and how to get a quote.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>FAQ</span></div>
+    <h1>Questions? We've got answers.</h1>
+    <p>Everything you might want to know about choosing, installing and maintaining a Silex elevator. Still stuck? <a href="{{ url_for('contact') }}">Talk to our team.</a></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:820px">
+    <div class="faq">
+      {% for f in faqs %}
+      <details class="faq__item reveal" data-delay="{{ loop.index0 % 3 + 1 }}"{% if loop.first %} open{% endif %}>
+        <summary>
+          <span>{{ f.q }}</span>
+          <span class="faq__chevron">{{ icon('arrow') }}</span>
+        </summary>
+        <div class="faq__body"><p>{{ f.a }}</p></div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

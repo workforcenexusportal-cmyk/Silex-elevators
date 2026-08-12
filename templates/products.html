@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Products</span></div>
+    <h1>Nine elevator ranges, one standard: silky motion.</h1>
+    <p>From energy-saving MRL lifts to panoramic capsules and heavy-duty goods elevators — explore the complete Silex range and find the right fit for your building.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid g-3">
+      {% for p in products %}
+      <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="pcard__media">
+          <img src="{{ url_for('static', filename='img/prod_' + p.slug + '.jpg') }}" alt="{{ p.name }}">
+          {% if p.tag %}<span class="pcard__tag">{{ p.tag }}</span>{% endif %}
+        </div>
+        <div class="pcard__body">
+          <h3>{{ p.name }}</h3>
+          <p>{{ p.short }}</p>
+          <div class="pcard__meta">
+            <span>Capacity <b>{{ p.capacity }}</b></span>
+            <span>Speed <b>{{ p.speed }}</b></span>
+          </div>
+          <span class="pcard__link">View details {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_estimator.html" %}
+
+{% include "_cta.html" %}
+{% endblock %}

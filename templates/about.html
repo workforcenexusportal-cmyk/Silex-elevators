@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>About</span></div>
+    <h1>Rising with India, one smooth floor at a time.</h1>
+    <p>{{ cfg.COMPANY_NAME }} is a globally acknowledged manufacturer, supplier and exporter of highly efficient lifts — engineered in Gujarat, trusted across the world.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="reveal reveal--left">
+      <span class="eyebrow">Company Profile</span>
+      <h2 class="section-title">Efficient lifts, honest engineering.</h2>
+      <p class="section-lead">Recognised as one of the leading elevator companies in Gujarat, {{ cfg.COMPANY_NAME }} manufactures and installs a complete range of lifts for residential, commercial, industrial and healthcare buildings. Our promise is simple — silky motion at an affordable cost.</p>
+      <div class="prose">
+        <p>Two well-developed factories, modern machinery and computer-enabled design let our qualified engineers build elevators that are safe, quiet and long-lasting. An in-house R&amp;D department keeps us continuously improving performance, comfort and energy efficiency.</p>
+      </div>
+      <div class="chips mt-s">
+        <span class="chip">{{ cfg.CERTIFICATION }}</span>
+        <span class="chip">In-house R&amp;D</span>
+        <span class="chip">Two Factories</span>
+        <span class="chip">Global Exporter</span>
+      </div>
+    </div>
+    <div class="split__media reveal reveal--right" data-delay="1">
+      <img src="{{ url_for('static', filename='img/prod_mrl.jpg') }}" alt="Silex elevator engineering">
+      <div class="badge-float"><b>In-house R&amp;D</b><span>Two factories</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission / Vision / Values -->
+<section class="section section--ink">
+  <div class="container">
+    <div class="grid g-3">
+      <div class="card reveal">
+        <div class="card__icon">{{ icon('design') }}</div>
+        <h3>Our Mission</h3>
+        <p>To make safe, silky-smooth vertical mobility accessible to every Indian building through honest engineering and fair pricing.</p>
+      </div>
+      <div class="card reveal" data-delay="1">
+        <div class="card__icon">{{ icon('globe') }}</div>
+        <h3>Our Vision</h3>
+        <p>To be India's most trusted elevator brand and a respected exporter across four continents.</p>
+      </div>
+      <div class="card reveal" data-delay="2">
+        <div class="card__icon">{{ icon('safety') }}</div>
+        <h3>Our Values</h3>
+        <p>Safety first, quality always, and a customer relationship that lasts far beyond installation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="section">
+  <div class="container">
+    <div class="stats reveal">
+      {% for s in stats %}<div class="stat"><b>{{ s.value }}</b><span>{{ s.label }}</span></div>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Why us pillars -->
+<section class="section section--tight">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Our Strengths</span>
+      <h2 class="section-title">Built on solid foundations</h2>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for w in why_us %}
+      <div class="card reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="card__icon">{{ icon(w.icon) }}</div>
+        <h3>{{ w.title }}</h3>
+        <p>{{ w.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Reach -->
+<section class="section section--navy">
+  <div class="container">
+    <div class="split">
+      <div class="reveal">
+        <span class="eyebrow">Across India</span>
+        <h2 class="section-title">A branch network that's always nearby</h2>
+        <p class="section-lead">Local presence means faster installation and service, wherever you build.</p>
+        <div class="chips mt-s">
+          {% for b in india_branches %}<span class="chip">{{ b }}</span>{% endfor %}
+        </div>
+      </div>
+      <div class="reveal" data-delay="1">
+        <span class="eyebrow">Global Network</span>
+        <h2 class="section-title">Exporting Indian engineering worldwide</h2>
+        <p class="section-lead">Silex elevators run in homes and businesses across four continents.</p>
+        <div class="chips mt-s">
+          {% for g in global_network %}<span class="chip">{{ g }}</span>{% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

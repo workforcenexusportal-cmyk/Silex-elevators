@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Technology & Innovations{% endblock %}
+{% block meta_desc %}The technology behind Silex elevators — gearless permanent-magnet drives, VVVF control, Automatic Rescue Device, microprocessor control and energy-saving design.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Technology</span></div>
+    <h1>Engineering that makes the motion silky.</h1>
+    <p>Every Silex elevator is built on proven, energy-smart technology — from gearless traction machines to intelligent controls and multiple layers of safety.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid g-3">
+      {% for i in innovations %}
+      <div class="card reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="card__icon">{{ icon(i.icon) }}</div>
+        <h3>{{ i.name }}</h3>
+        <p>{{ i.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft">
+  <div class="container split">
+    <div class="reveal">
+      <span class="eyebrow">Safety First</span>
+      <h2 class="section-title">Multiple safety systems, working together</h2>
+      <p class="section-lead" style="margin-left:0">Silex elevators combine mechanical and electronic safeguards so passengers are protected in every situation — including power failures.</p>
+      <div class="chips mt-m">
+        <span class="chip">Automatic Rescue Device</span>
+        <span class="chip">Overspeed Governor</span>
+        <span class="chip">Door Safety Sensors</span>
+        <span class="chip">Emergency Alarm &amp; Light</span>
+        <span class="chip">Micro-levelling</span>
+        <span class="chip">Fireman's Operation</span>
+      </div>
+    </div>
+    <div class="reveal" data-delay="1">
+      <div class="imgframe">
+        <img src="{{ url_for('static', filename='img/components.jpg') }}" alt="Silex elevator technology and components">
+        <div class="imgframe__cap">{{ icon('cpu') }} Gearless drive &amp; microprocessor control</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

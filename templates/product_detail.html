@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block meta_desc %}{{ product.short }} Capacity {{ product.capacity }}. {{ cfg.COMPANY_NAME }} — {{ cfg.CERTIFICATION }}.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <a href="{{ url_for('products') }}">Products</a> / <span>{{ product.name }}</span></div>
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.short }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="split__media reveal reveal--left">
+      <img src="{{ url_for('static', filename='img/prod_' + product.slug + '.jpg') }}" alt="{{ product.name }}">
+      {% if product.tag %}<div class="badge-float"><b>{{ product.tag }}</b><span>{{ product.capacity }}</span></div>{% endif %}
+    </div>
+    <div class="reveal reveal--right" data-delay="1">
+      <span class="eyebrow">Overview</span>
+      <h2 class="section-title" style="font-size:clamp(1.6rem,3vw,2.3rem)">Engineered for its purpose.</h2>
+      <div class="prose"><p>{{ product.description }}</p></div>
+      <div class="pcard__meta" style="gap:34px;margin-top:22px;font-size:.95rem">
+        <span>Capacity<br><b style="font-size:1.15rem">{{ product.capacity }}</b></span>
+        <span>Typical Speed<br><b style="font-size:1.15rem">{{ product.speed }}</b></span>
+      </div>
+      <a href="{{ url_for('contact', type=product.name) }}" class="btn btn--gold mt-m">Enquire About This Model {{ icon('arrow') }}</a>
+      <a href="{{ url_for('brochure') }}" class="btn btn--line mt-m" style="margin-left:10px">Download Brochure</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--ink section--tight">
+  <div class="container">
+    <span class="eyebrow">Key Highlights</span>
+    <h2 class="section-title">Why it stands out</h2>
+    <ul class="list-check mt-m" style="grid-template-columns:repeat(2,1fr);display:grid;gap:16px 40px">
+      {% for h in product.highlights %}
+      <li>{{ icon('check') }}<span>{{ h }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<!-- Spec sheet -->
+<section class="section section--soft">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Specifications</span>
+      <h2 class="section-title">Full dimensions &amp; technical data</h2>
+      <p class="section-lead">Straight from the Silex engineering brochure — car sizes, shaft dimensions, capacities and speeds.</p>
+    </div>
+    <div class="imgframe reveal mt-m" style="max-width:960px;margin-inline:auto">
+      <img src="{{ url_for('static', filename='img/spec_' + product.slug + '.jpg') }}" alt="{{ product.name }} specification sheet">
+      <div class="imgframe__cap">{{ product.name }} — technical specification (Silex brochure)</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="reveal">
+      <span class="eyebrow">Make It Yours</span>
+      <h2 class="section-title" style="font-size:clamp(1.6rem,3vw,2.3rem)">Cabin finishes</h2>
+      <p class="section-lead">Personalise the ride with a finish that matches your building's character.</p>
+      <div class="chips mt-s">{% for c in cabin_finishes %}<span class="chip">{{ c }}</span>{% endfor %}</div>
+    </div>
+    <div class="reveal" data-delay="1">
+      <span class="eyebrow">Controls & Safety</span>
+      <h2 class="section-title" style="font-size:clamp(1.6rem,3vw,2.3rem)">Fixtures</h2>
+      <p class="section-lead">Modern, reliable operating panels and safety systems as standard.</p>
+      <div class="chips mt-s">{% for f in fixtures %}<span class="chip">{{ f }}</span>{% endfor %}</div>
+    </div>
+  </div>
+</section>
+
+<!-- Related -->
+<section class="section section--tight">
+  <div class="container">
+    <div class="head-center"><span class="eyebrow">Keep Exploring</span><h2 class="section-title">Related products</h2></div>
+    <div class="grid g-3 mt-m">
+      {% for p in related %}
+      <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard reveal" data-delay="{{ loop.index }}">
+        <div class="pcard__media">
+          <img src="{{ url_for('static', filename='img/prod_' + p.slug + '.jpg') }}" alt="{{ p.name }}">
+        </div>
+        <div class="pcard__body">
+          <h3>{{ p.name }}</h3>
+          <p>{{ p.short }}</p>
+          <span class="pcard__link">View details {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

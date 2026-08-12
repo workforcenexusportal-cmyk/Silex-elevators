@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__bg">
+    <img src="{{ url_for('static', filename='img/hero.jpg') }}" alt="Panoramic Silex glass elevators">
+  </div>
+  <div class="container hero__inner">
+    <span class="hero__badge">{{ icon('safety') }} {{ cfg.CERTIFICATION }} · Made in India</span>
+    <p class="hero__kicker">{{ cfg.COMPANY_TAGLINE }}</p>
+    <h1>Elevate every journey with <span class="grad">silky-smooth</span> vertical mobility.</h1>
+    <p class="hero__lead">{{ cfg.COMPANY_NAME }} designs, manufactures and installs premium elevators — from energy-smart MRL lifts to panoramic capsules — engineered for silky motion at an affordable cost.</p>
+    <div class="hero__cta">
+      <a href="{{ url_for('contact') }}" class="btn btn--gold">Request a Free Quote {{ icon('arrow') }}</a>
+      <a href="{{ url_for('products') }}" class="btn btn--ghost">Explore Products</a>
+    </div>
+    <div class="hero__trust">
+      <div><b>9</b><span>Elevator ranges</span></div>
+      <div><b>20+</b><span>Cities served</span></div>
+      <div><b>10+</b><span>Countries exported</span></div>
+    </div>
+  </div>
+  <div class="scrolldown">Scroll</div>
+</section>
+
+<!-- STATS -->
+<section class="section--tight" style="margin-top:-46px; position:relative; z-index:5;">
+  <div class="container">
+    <div class="stats reveal">
+      {% for s in stats %}
+      <div class="stat"><b>{{ s.value }}</b><span>{{ s.label }}</span></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- INTRO / ABOUT SNAPSHOT -->
+<section class="section">
+  <div class="container split">
+    <div class="split__media reveal reveal--left">
+      <img src="{{ url_for('static', filename='img/prod_capsule.jpg') }}" alt="Silex capsule elevator interior">
+      <div class="badge-float"><b>{{ cfg.CERTIFICATION.split(' ')[0] }}</b><span>{{ cfg.CERTIFICATION }}</span></div>
+    </div>
+    <div class="reveal reveal--right" data-delay="1">
+      <span class="eyebrow">Who We Are</span>
+      <h2 class="section-title">One of Gujarat's most trusted elevator manufacturers.</h2>
+      <p class="section-lead">Backed by two well-developed factories, an in-house R&amp;D department and computer-aided design, {{ cfg.COMPANY_NAME }} delivers extremely efficient lifts to homes, hospitals, malls and industries across India and beyond.</p>
+      <ul class="list-check">
+        <li>{{ icon('check') }}<span><b>ISO 9001:2008 certified</b> quality across design, manufacturing &amp; service.</span></li>
+        <li>{{ icon('check') }}<span><b>World-class components</b> from Montanari, Wittur, Fermator, Yaskawa &amp; more.</span></li>
+        <li>{{ icon('check') }}<span><b>Silky motion at affordable cost</b> — premium engineering without the premium price.</span></li>
+      </ul>
+      <a href="{{ url_for('about') }}" class="btn btn--line mt-s">More About Us {{ icon('arrow') }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section section--soft">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Our Range</span>
+      <h2 class="section-title">Elevators for every building</h2>
+      <p class="section-lead">Nine engineered product lines — whatever you're building, there's a Silex lift for it.</p>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for p in products %}
+      <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="pcard__media">
+          <img src="{{ url_for('static', filename='img/prod_' + p.slug + '.jpg') }}" alt="{{ p.name }}">
+          {% if p.tag %}<span class="pcard__tag">{{ p.tag }}</span>{% endif %}
+        </div>
+        <div class="pcard__body">
+          <h3>{{ p.name }}</h3>
+          <p>{{ p.short }}</p>
+          <div class="pcard__meta"><span>Capacity <b>{{ p.capacity }}</b></span><span>Speed <b>{{ p.speed }}</b></span></div>
+          <span class="pcard__link">View details {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="center mt-m">
+      <a href="{{ url_for('products') }}" class="btn btn--navy">See All Products {{ icon('arrow') }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">What We Do</span>
+      <h2 class="section-title">End-to-end elevator solutions</h2>
+      <p class="section-lead">From the first site survey to lifelong maintenance, we stay with you at every floor.</p>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for s in services %}
+      <div class="card reveal" data-delay="{{ loop.index }}">
+        <div class="card__icon">{{ icon(s.icon) }}</div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="center mt-m"><a href="{{ url_for('services') }}" class="btn btn--line">All Services {{ icon('arrow') }}</a></div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section section--navy">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Why Silex</span>
+      <h2 class="section-title">Reasons builders choose us</h2>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for w in why_us %}
+      <div class="card reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="card__icon">{{ icon(w.icon) }}</div>
+        <h3>{{ w.title }}</h3>
+        <p>{{ w.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Our Work</span>
+      <h2 class="section-title">Recent installations</h2>
+      <p class="section-lead">A glimpse of buildings rising smoothly with Silex elevators.</p>
+    </div>
+    <div class="gallery mt-m">
+      {% for pr in projects %}
+      <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}">
+        <img src="{{ url_for('static', filename='img/' + pr.img) }}" alt="{{ pr.title }}">
+        <div class="tile__body">
+          <div class="tile__type">{{ pr.type }}</div>
+          <h3>{{ pr.title }}</h3>
+          <div class="tile__city">{{ icon('pin') }} {{ pr.city }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="center mt-m"><a href="{{ url_for('projects') }}" class="btn btn--line">View Project Gallery {{ icon('arrow') }}</a></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section--ink">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Client Voices</span>
+      <h2 class="section-title">Trusted, floor after floor</h2>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for t in testimonials %}
+      <div class="quote reveal" data-delay="{{ loop.index }}">
+        <div class="quote__mark">&ldquo;</div>
+        <p>{{ t.quote }}</p>
+        <div class="quote__who">
+          <div class="quote__ava">{{ t.name[0] }}</div>
+          <div><b>{{ t.name }}</b><span>{{ t.role }}</span></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS MARQUEE -->
+<section class="section--tight section--navy">
+  <div class="container center" style="margin-bottom:26px">
+    <span class="eyebrow" style="justify-content:center">Technically Associated With</span>
+  </div>
+  <div class="marquee">
+    <div class="marquee__track">
+      {% for p in partners %}<span class="marquee__item">{{ p }}</span>{% endfor %}
+      {% for p in partners %}<span class="marquee__item">{{ p }}</span>{% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_estimator.html" %}
+
+<!-- CTA -->
+{% include "_cta.html" %}
+{% endblock %}

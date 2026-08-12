@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}{{ segment.name }} Solutions{% endblock %}
+{% block meta_desc %}{{ segment.tagline }} — Silex elevator solutions for {{ segment.name|lower }} buildings.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <a href="{{ url_for('solutions') }}">Solutions</a> / <span>{{ segment.name }}</span></div>
+    <h1>{{ segment.name }} <span class="text-gold">Solutions</span></h1>
+    <p>{{ segment.tagline }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="reveal">
+      <span class="eyebrow">{{ icon(segment.icon) }} {{ segment.name }}</span>
+      <h2 class="section-title">Built for how this space really moves</h2>
+      <p class="section-lead" style="margin-left:0">{{ segment.intro }}</p>
+      <ul class="info-list info-list--check mt-m">
+        {% for b in segment.benefits %}
+        <li><div class="ic">{{ icon('check') }}</div><div><b style="font-weight:500">{{ b }}</b></div></li>
+        {% endfor %}
+      </ul>
+      <a href="{{ url_for('contact', type='General Enquiry') }}" class="btn btn--gold mt-m">Get a Free Quote {{ icon('arrow') }}</a>
+    </div>
+    <div class="reveal" data-delay="1">
+      <div class="imgframe">
+        <img src="{{ url_for('static', filename='img/' ~ segment.img) }}" alt="{{ segment.name }} elevators">
+        <div class="imgframe__cap">{{ icon(segment.icon) }} {{ segment.name }} mobility</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Recommended Range</span>
+      <h2 class="section-title">Elevators suited to {{ segment.name|lower }}</h2>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for p in seg_products %}
+      <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard reveal" data-delay="{{ loop.index }}">
+        <div class="pcard__media">
+          <img src="{{ url_for('static', filename='img/prod_' + p.slug + '.jpg') }}" alt="{{ p.name }}">
+          {% if p.tag %}<span class="pcard__tag">{{ p.tag }}</span>{% endif %}
+        </div>
+        <div class="pcard__body">
+          <h3>{{ p.name }}</h3>
+          <p>{{ p.short }}</p>
+          <span class="pcard__link">View details {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">More Solutions</span>
+      <h2 class="section-title">Explore other building types</h2>
+    </div>
+    <div class="chips mt-m" style="justify-content:center">
+      {% for s in other_segments %}
+      <a class="chip chip--link" href="{{ url_for('solution_detail', slug=s.slug) }}">{{ icon(s.icon) }} {{ s.name }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

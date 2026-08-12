@@ -1,0 +1,88 @@
+{# Interactive elevator estimator — client-side only, links to a prefilled quote #}
+{% from "_icons.html" import icon %}
+<section class="section section--soft" id="estimator">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Quick Planner</span>
+      <h2 class="section-title">Find your ideal elevator in 20 seconds</h2>
+      <p class="section-lead">Answer three quick questions and we'll suggest the right Silex range — then send you a tailored quote.</p>
+    </div>
+
+    <div class="grid g-2 mt-m" style="align-items:stretch">
+      <div class="card reveal">
+        <div class="form">
+          <div class="field">
+            <label for="est-use">What's the building?</label>
+            <select id="est-use">
+              <option value="residential">Home / Residential</option>
+              <option value="commercial">Office / Commercial / Apartment</option>
+              <option value="panoramic">Hotel / Mall (panoramic look)</option>
+              <option value="hospital">Hospital / Clinic</option>
+              <option value="goods">Factory / Warehouse (goods)</option>
+              <option value="parking">Car parking</option>
+              <option value="lowrise">Low-rise (2–4 floors, hydraulic)</option>
+            </select>
+          </div>
+          <div class="form__row">
+            <div class="field">
+              <label for="est-floors">Number of floors</label>
+              <input type="number" id="est-floors" min="2" max="60" value="6">
+            </div>
+            <div class="field">
+              <label for="est-cap" id="est-cap-label">Passengers</label>
+              <input type="number" id="est-cap" min="3" max="30" value="8">
+            </div>
+          </div>
+          <button type="button" class="btn btn--navy" id="est-go" style="justify-content:center">Recommend an elevator {{ icon('arrow') }}</button>
+        </div>
+      </div>
+
+      <div class="info-card reveal" data-delay="1" id="est-result" aria-live="polite">
+        <span class="eyebrow" style="color:var(--gold-lt)">Recommendation</span>
+        <h3 id="est-name" style="margin-top:10px">Home / Residential</h3>
+        <p id="est-desc" style="color:var(--inv-soft);margin-top:8px">Tell us about your building and we'll match a range.</p>
+        <ul class="info-list" style="margin-top:20px">
+          <li><div class="ic">{{ icon('passenger') }}</div><div><span>Capacity</span><b id="est-r-cap">—</b></div></li>
+          <li><div class="ic">{{ icon('mrl') }}</div><div><span>Typical speed</span><b id="est-r-speed">—</b></div></li>
+          <li><div class="ic">{{ icon('safety') }}</div><div><span>Best for</span><b id="est-r-for">—</b></div></li>
+        </ul>
+        <div class="chips" style="margin-top:22px">
+          <a href="#" id="est-quote" class="btn btn--gold btn--sm">Get a tailored quote {{ icon('arrow') }}</a>
+          <a href="#" id="est-more" class="btn btn--ghost btn--sm">View product</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var MAP = {
+    residential: { slug: "mrl", name: "Machine Room-Less (MRL) Elevator", cap: "6–13 Passengers", speed: "Up to 1.0 m/s", best: "Homes & residential towers", type: "Machine Room-Less (MRL) Elevators", unit: "Passengers" },
+    commercial:  { slug: "passenger-auto", name: "Passenger Elevator — Auto Doors", cap: "6–13 Passengers", speed: "Up to 1.5 m/s", best: "Offices & apartments", type: "Passenger Elevators — Auto Doors", unit: "Passengers" },
+    panoramic:   { slug: "capsule", name: "Capsule Elevator", cap: "10–16 Passengers", speed: "VVVF drive", best: "Hotels, malls & atriums", type: "Capsule Elevators", unit: "Passengers" },
+    hospital:    { slug: "hospital", name: "Hospital / Stretcher Elevator", cap: "8–12 Passengers", speed: "Smooth micro-levelling", best: "Hospitals & clinics", type: "Hospital / Stretcher Elevators", unit: "Passengers" },
+    goods:       { slug: "goods", name: "Goods / Freight Elevator", cap: "500–3000 kg", speed: "0.25–1.0 m/s", best: "Factories & warehouses", type: "Goods / Freight Elevators", unit: "Load (kg)" },
+    parking:     { slug: "car-parking", name: "Car Parking Elevator", cap: "500–5000 kg", speed: "Up to 0.5 m/s", best: "Automated car parking", type: "Car Parking Elevators", unit: "Load (kg)" },
+    lowrise:     { slug: "hydraulic", name: "Hydraulic Elevator", cap: "3–20 Passengers", speed: "Low-rise", best: "2–4 floor buildings", type: "Hydraulic Elevators", unit: "Passengers" }
+  };
+  var use = document.getElementById("est-use");
+  var capLabel = document.getElementById("est-cap-label");
+  function syncUnit() {
+    var m = MAP[use.value];
+    capLabel.textContent = m.unit;
+  }
+  use.addEventListener("change", syncUnit); syncUnit();
+
+  document.getElementById("est-go").addEventListener("click", function () {
+    var m = MAP[use.value];
+    document.getElementById("est-name").textContent = m.name;
+    document.getElementById("est-desc").textContent = "Based on your building, the " + m.name + " is the best-fit Silex range.";
+    document.getElementById("est-r-cap").textContent = m.cap;
+    document.getElementById("est-r-speed").textContent = m.speed;
+    document.getElementById("est-r-for").textContent = m.best;
+    document.getElementById("est-quote").setAttribute("href", "/contact?type=" + encodeURIComponent(m.type));
+    document.getElementById("est-more").setAttribute("href", "/products/" + m.slug);
+  });
+})();
+</script>

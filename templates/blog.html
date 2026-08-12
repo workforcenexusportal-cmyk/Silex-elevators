@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Blog</span></div>
+    <h1>Insights on elevators, safety &amp; design.</h1>
+    <p>Guides and tips to help you choose, run and maintain the perfect vertical transport for your building.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid g-3">
+      {% for post in posts %}
+      <a href="{{ url_for('blog_post', slug=post.slug) }}" class="card reveal" data-delay="{{ loop.index0 % 3 + 1 }}" style="padding:0;overflow:hidden">
+        <div class="{{ post.gradient }} art-lines" style="height:170px;position:relative">
+          <span class="card__tag" style="top:16px;left:16px;right:auto">{{ post.category }}</span>
+        </div>
+        <div style="padding:26px">
+          <span class="muted" style="font-size:.82rem">{{ post.date }}</span>
+          <h3 style="margin-top:6px;font-size:1.16rem">{{ post.title }}</h3>
+          <p>{{ post.excerpt }}</p>
+          <span class="card__link">Read article {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

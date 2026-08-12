@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Careers{% endblock %}
+{% block meta_desc %}Build your career with Silex Elevator — join a growing ISO 9001:2008 certified Indian elevator company. Explore openings and apply online.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Careers</span></div>
+    <h1>Help India move upward — with Silex.</h1>
+    <p>We're always looking for people who take pride in engineering, service and doing things the right way. Explore our current openings and apply below.</p>
+  </div>
+</section>
+
+<!-- Why join -->
+<section class="section">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Why Silex</span>
+      <h2 class="section-title">A place to grow your craft</h2>
+    </div>
+    <div class="grid g-4 mt-m">
+      {% for w in why_join %}
+      <div class="card reveal" data-delay="{{ loop.index }}">
+        <div class="card__icon">{{ icon('check') }}</div>
+        <p style="margin:0">{{ w }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Openings -->
+<section class="section section--soft">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Open Positions</span>
+      <h2 class="section-title">Current openings</h2>
+    </div>
+    <div class="grid g-2 mt-m">
+      {% for job in openings %}
+      <div class="job reveal" data-delay="{{ loop.index0 % 2 + 1 }}">
+        <div class="job__head">
+          <h3>{{ job.title }}</h3>
+          <span class="job__type">{{ job.type }}</span>
+        </div>
+        <div class="job__meta">
+          <span>{{ icon('pin') }} {{ job.location }}</span>
+          <span>{{ icon('clock') }} {{ job.exp }}</span>
+        </div>
+        <p>{{ job.summary }}</p>
+        <a href="#apply" class="btn btn--line btn--sm" data-role="{{ job.title }}">Apply for this role {{ icon('arrow') }}</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Application form -->
+<section class="section" id="apply">
+  <div class="container" style="max-width:760px">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+      <div class="flash flash--{{ category }}">
+        {{ icon('check') if category == 'success' else icon('safety') }}
+        <span>{{ message }}</span>
+      </div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="head-center">
+      <span class="eyebrow">Apply Now</span>
+      <h2 class="section-title">Submit your application</h2>
+      <p class="section-lead">Fill in your details and our HR team will reach out. You can email your CV to <a href="mailto:{{ cfg.EMAIL }}">{{ cfg.EMAIL }}</a>.</p>
+    </div>
+
+    <form class="form mt-m" method="POST" action="{{ url_for('careers') }}" novalidate>
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <div style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true">
+        <label>Leave this field empty
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </label>
+      </div>
+      <div class="form__row">
+        <div class="field">
+          <label for="name">Full Name <span class="req">*</span></label>
+          <input type="text" id="name" name="name" required placeholder="Your name">
+        </div>
+        <div class="field">
+          <label for="phone">Phone <span class="req">*</span></label>
+          <input type="tel" id="phone" name="phone" required placeholder="10-digit mobile number">
+        </div>
+      </div>
+      <div class="form__row">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="experience">Experience</label>
+          <input type="text" id="experience" name="experience" placeholder="e.g. 2 years">
+        </div>
+      </div>
+      <div class="field">
+        <label for="position">Position</label>
+        <select id="position" name="position">
+          <option value="">Select a role…</option>
+          {% for job in openings %}<option value="{{ job.title }}" {{ 'selected' if prefill == job.title }}>{{ job.title }}</option>{% endfor %}
+          <option value="Other / General Application">Other / General Application</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="message">Message / Cover Note</label>
+        <textarea id="message" name="message" placeholder="Tell us a little about yourself and a link to your CV/portfolio."></textarea>
+      </div>
+      <button type="submit" class="btn btn--gold">Submit Application {{ icon('arrow') }}</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block head_extra %}
+<script>
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-role]');
+    if (!t) return;
+    var sel = document.getElementById('position');
+    if (sel) {
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === t.getAttribute('data-role')) { sel.selectedIndex = i; break; }
+      }
+    }
+  });
+</script>
+{% endblock %}

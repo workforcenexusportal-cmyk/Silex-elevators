@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}AMC & Maintenance{% endblock %}
+{% block meta_desc %}Silex Annual Maintenance Contracts (AMC) with scheduled preventive service and 24×7 breakdown support — Essential, Comprehensive and Premium Care plans.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>AMC &amp; Maintenance</span></div>
+    <h1>Keep every ride silky — for the life of your lift.</h1>
+    <p>Extend the life, safety and efficiency of your elevator with a Silex Annual Maintenance Contract, backed by trained engineers, genuine spares and round-the-clock support.</p>
+  </div>
+</section>
+
+<!-- 24x7 emergency banner -->
+<section class="section--tight">
+  <div class="container">
+    <div class="helpline reveal">
+      <div class="helpline__ic">{{ icon('support') }}</div>
+      <div class="helpline__txt">
+        <span>24×7 Breakdown &amp; Emergency Helpline</span>
+        <b>Someone stuck or lift down? Call us any time.</b>
+      </div>
+      <a href="tel:{{ cfg.EMERGENCY_PHONE|replace(' ','') }}" class="btn btn--gold">{{ icon('phone') }} {{ cfg.EMERGENCY_PHONE }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section class="section">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">How Our Service Works</span>
+      <h2 class="section-title">A partnership, not just a purchase</h2>
+    </div>
+    <div class="grid g-4 mt-m">
+      {% for s in steps %}
+      <div class="card reveal" data-delay="{{ loop.index }}">
+        <div class="card__icon">{{ icon(s.icon) }}</div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Plans -->
+<section class="section section--soft">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">AMC Plans</span>
+      <h2 class="section-title">Choose the cover that fits your building</h2>
+      <p class="section-lead">Transparent annual maintenance plans for homes, offices and critical facilities.</p>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for p in plans %}
+      <div class="plan reveal {{ 'plan--featured' if p.featured }}" data-delay="{{ loop.index }}">
+        {% if p.featured %}<span class="plan__flag">Most Popular</span>{% endif %}
+        <h3>{{ p.name }}</h3>
+        <div class="plan__price">{{ p.price }}</div>
+        <p class="plan__best">Best for {{ p.best }}</p>
+        <ul class="plan__list">
+          {% for f in p.features %}
+          <li>{{ icon('check') }}<span>{{ f }}</span></li>
+          {% endfor %}
+        </ul>
+        <a href="{{ url_for('contact', type='AMC / Maintenance') }}" class="btn {{ 'btn--gold' if p.featured else 'btn--line' }}" style="width:100%;justify-content:center">Enquire About {{ p.name }}</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Contact</span></div>
+    <h1>Let's get your project moving — upward.</h1>
+    <p>Tell us about your building and requirements. Our team will get back to you with expert advice and a free quotation.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <!-- Form -->
+    <div class="reveal">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="flash flash--{{ category }}">
+          {{ icon('check') if category == 'success' else icon('safety') }}
+          <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+      {% endwith %}
+
+      <span class="eyebrow">Get a Free Quote</span>
+      <h2 class="section-title" style="font-size:clamp(1.6rem,3vw,2.2rem)">Request a quotation</h2>
+
+      <form class="form mt-s" method="POST" action="{{ url_for('contact') }}" novalidate>
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <div style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true">
+          <label>Leave this field empty
+            <input type="text" name="website" tabindex="-1" autocomplete="off">
+          </label>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <label for="name">Full Name <span class="req">*</span></label>
+            <input type="text" id="name" name="name" required placeholder="Your name">
+          </div>
+          <div class="field">
+            <label for="phone">Phone <span class="req">*</span></label>
+            <input type="tel" id="phone" name="phone" required placeholder="10-digit mobile number">
+          </div>
+        </div>
+        <div class="form__row">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com">
+          </div>
+          <div class="field">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="e.g. Surat">
+          </div>
+        </div>
+        <div class="field">
+          <label for="elevator_type">Interested In</label>
+          <select id="elevator_type" name="elevator_type">
+            <option value="">Select an option…</option>
+            {% for t in enquiry_types %}<option value="{{ t }}" {{ 'selected' if prefill == t }}>{{ t }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">Your Requirement</label>
+          <textarea id="message" name="message" placeholder="Number of floors, load/capacity, timeline, etc."></textarea>
+        </div>
+        <button type="submit" class="btn btn--gold">Submit Enquiry {{ icon('arrow') }}</button>
+      </form>
+    </div>
+
+    <!-- Info -->
+    <div class="reveal" data-delay="1">
+      <div class="info-card">
+        <h3>Talk to us directly</h3>
+        <ul class="info-list">
+          <li>
+            <div class="ic">{{ icon('phone') }}</div>
+            <div>
+              <span>{{ cfg.CONTACT_PERSON }}</span>
+              <b><a href="tel:{{ cfg.PHONE|replace(' ','') }}">{{ cfg.PHONE }}</a></b>
+            </div>
+          </li>
+          <li>
+            <div class="ic">{{ icon('phone') }}</div>
+            <div>
+              <span>{{ cfg.CONTACT_PERSON_ALT }}</span>
+              <b><a href="tel:{{ cfg.PHONE_ALT|replace(' ','') }}">{{ cfg.PHONE_ALT }}</a></b>
+            </div>
+          </li>
+          <li>
+            <div class="ic">{{ icon('mail') }}</div>
+            <div>
+              <span>Email</span>
+              <b><a href="mailto:{{ cfg.EMAIL }}">{{ cfg.EMAIL }}</a></b>
+            </div>
+          </li>
+          <li>
+            <div class="ic">{{ icon('pin') }}</div>
+            <div>
+              <span>Head Office</span>
+              <b style="font-weight:500;line-height:1.5">{{ cfg.ADDRESS }}</b>
+            </div>
+          </li>
+        </ul>
+        <a href="https://wa.me/{{ cfg.WHATSAPP }}?text={{ ('Hi ' ~ cfg.COMPANY_NAME ~ ', I would like a quote for an elevator.') | urlencode }}" target="_blank" rel="noopener" class="btn btn--gold mt-m" style="width:100%;justify-content:center">Chat on WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Map -->
+<section class="section--tight" style="padding-top:0">
+  <div class="container">
+    <div class="imgframe reveal">
+      <iframe title="Silex Elevator location" width="100%" height="420" style="border:0;display:block"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps?q={{ cfg.MAPS_QUERY | urlencode }}&output=embed"></iframe>
+      <div class="imgframe__cap">{{ icon('pin') }} {{ cfg.ADDRESS }}</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

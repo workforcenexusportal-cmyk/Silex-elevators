@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Modernization{% endblock %}
+{% block meta_desc %}Modernize your existing elevator with Silex — drive & control upgrades, cabin makeovers, automatic doors, safety retrofits and energy-efficiency improvements.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Modernization</span></div>
+    <h1>Give your old elevator a brand-new life.</h1>
+    <p>Why replace when you can modernize? Upgrade the drive, controls, cabin, doors and safety systems of your existing lift for a smoother, safer and more efficient ride — often at a fraction of the cost of a new installation.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid g-3">
+      {% for m in items %}
+      <div class="card reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="card__icon">{{ icon('modernize') }}</div>
+        <h3>{{ m.title }}</h3>
+        <p>{{ m.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section--ink">
+  <div class="container split">
+    <div class="reveal">
+      <span class="eyebrow">Why Modernize</span>
+      <h2 class="section-title" style="color:#fff">Smarter than a full replacement</h2>
+      <ul class="info-list info-list--check mt-m">
+        <li><div class="ic">{{ icon('check') }}</div><div><b style="font-weight:500;color:#fff">Lower cost and faster than a new installation</b></div></li>
+        <li><div class="ic">{{ icon('check') }}</div><div><b style="font-weight:500;color:#fff">Up to 25% energy savings with modern drives</b></div></li>
+        <li><div class="ic">{{ icon('check') }}</div><div><b style="font-weight:500;color:#fff">Improved safety, comfort and accessibility</b></div></li>
+        <li><div class="ic">{{ icon('check') }}</div><div><b style="font-weight:500;color:#fff">Minimal downtime — building stays in use</b></div></li>
+      </ul>
+      <a href="{{ url_for('contact', type='Modernization') }}" class="btn btn--gold mt-m">Request a Modernization Survey {{ icon('arrow') }}</a>
+    </div>
+    <div class="reveal" data-delay="1">
+      <div class="imgframe">
+        <img src="{{ url_for('static', filename='img/components.jpg') }}" alt="Modern elevator components">
+        <div class="imgframe__cap">{{ icon('modernize') }} Upgraded drives, controls &amp; safety gear</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

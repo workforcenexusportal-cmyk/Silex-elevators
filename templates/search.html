@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Search{% endblock %}
+{% block meta_desc %}Search Silex Elevator — products, solutions, services and articles.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Search</span></div>
+    <h1>Search Silex</h1>
+    <form class="searchbar searchbar--page" method="GET" action="{{ url_for('search') }}" role="search">
+      <span class="searchbar__ic">{{ icon('search') }}</span>
+      <input type="search" name="q" value="{{ q }}" placeholder="Search products, solutions, services…" autofocus>
+      <button type="submit" class="btn btn--gold btn--sm">Search</button>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:860px">
+    {% if q %}
+      <p class="section-lead" style="margin:0 0 22px">
+        {{ results|length }} result{{ '' if results|length == 1 else 's' }} for “{{ q }}”
+      </p>
+      {% if results %}
+      <div class="results">
+        {% for r in results %}
+        <a class="result reveal" href="{{ r.url }}" data-delay="{{ loop.index0 % 3 + 1 }}">
+          <span class="result__kind">{{ r.kind }}</span>
+          <h3>{{ r.title }}</h3>
+          {% if r.snippet %}<p>{{ r.snippet }}</p>{% endif %}
+          <span class="result__go">{{ icon('arrow') }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="info-card" style="text-align:center">
+        <div class="card__icon" style="margin:0 auto 12px">{{ icon('search') }}</div>
+        <h3>No results found</h3>
+        <p>Try a different keyword, or <a href="{{ url_for('contact') }}">contact our team</a> directly.</p>
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="chips">
+        <a class="chip chip--link" href="{{ url_for('search', q='MRL') }}">MRL</a>
+        <a class="chip chip--link" href="{{ url_for('search', q='capsule') }}">Capsule</a>
+        <a class="chip chip--link" href="{{ url_for('search', q='AMC') }}">AMC</a>
+        <a class="chip chip--link" href="{{ url_for('search', q='modernization') }}">Modernization</a>
+        <a class="chip chip--link" href="{{ url_for('search', q='hospital') }}">Hospital</a>
+        <a class="chip chip--link" href="{{ url_for('search', q='safety') }}">Safety</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

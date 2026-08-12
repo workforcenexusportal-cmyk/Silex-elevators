@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Services{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Services</span></div>
+    <h1>We don't just install lifts — we look after them for life.</h1>
+    <p>Supply, installation, annual maintenance, modernization and 24×7 support, all backed by genuine spares and qualified engineers.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid g-3">
+      {% for s in services %}
+      <div class="card reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="card__icon">{{ icon(s.icon) }}</div>
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Customisation options -->
+<section class="section section--ink">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Design Options</span>
+      <h2 class="section-title">Tailor every detail</h2>
+      <p class="section-lead">Mix and match cabins, doors and fixtures to match your building and budget.</p>
+    </div>
+
+    <div class="mt-m">
+      <h3 style="color:#fff;margin-bottom:14px">Cabin Finishes</h3>
+      <div class="chips">{% for c in cabin_finishes %}<span class="chip">{{ c }}</span>{% endfor %}</div>
+    </div>
+    <div class="mt-m">
+      <h3 style="color:#fff;margin-bottom:14px">Automatic Door Designs</h3>
+      <div class="chips">{% for d in auto_doors %}<span class="chip">{{ d }}</span>{% endfor %}</div>
+    </div>
+    <div class="mt-m">
+      <h3 style="color:#fff;margin-bottom:14px">Manual Door Designs</h3>
+      <div class="chips">{% for d in manual_doors %}<span class="chip">{{ d }}</span>{% endfor %}</div>
+    </div>
+    <div class="mt-m">
+      <h3 style="color:#fff;margin-bottom:14px">Fixtures &amp; Controls</h3>
+      <div class="chips">{% for f in fixtures %}<span class="chip">{{ f }}</span>{% endfor %}</div>
+    </div>
+    <div class="mt-m">
+      <h3 style="color:#fff;margin-bottom:14px">Machines We Use</h3>
+      <div class="chips">{% for m in machines %}<span class="chip">{{ m }}</span>{% endfor %}</div>
+    </div>
+  </div>
+</section>
+
+<!-- Finishes gallery -->
+<section class="section section--soft">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Finish Catalogue</span>
+      <h2 class="section-title">Cabin &amp; door designs</h2>
+      <p class="section-lead">A selection of the stainless-steel, glass, mirror and decorative finishes available for Silex cabins and doors.</p>
+    </div>
+    <div class="grid g-2 mt-m">
+      <div class="imgframe reveal">
+        <img src="{{ url_for('static', filename='img/finishes_cabin.jpg') }}" alt="Silex cabin finish options">
+        <div class="imgframe__cap">Cabin interior finishes</div>
+      </div>
+      <div class="imgframe reveal" data-delay="1">
+        <img src="{{ url_for('static', filename='img/finishes_doors.jpg') }}" alt="Silex door design options">
+        <div class="imgframe__cap">Automatic &amp; manual door designs</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section class="section">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">How We Work</span>
+      <h2 class="section-title">From enquiry to smooth rides</h2>
+    </div>
+    <div class="grid g-4 mt-m">
+      {% set steps = [
+        ('01', 'Consultation', 'We understand your building, traffic and budget.'),
+        ('02', 'Design & Quote', 'CAD-based design with a clear, transparent quotation.'),
+        ('03', 'Manufacture & Install', 'In-house production and professional on-site installation.'),
+        ('04', 'Service & AMC', 'Ongoing maintenance so your lift always runs like new.')
+      ] %}
+      {% for num, title, text in steps %}
+      <div class="card reveal" data-delay="{{ loop.index }}">
+        <div style="font-family:var(--display);font-size:2.4rem;font-weight:800;color:var(--gold);opacity:.5">{{ num }}</div>
+        <h3 style="margin-top:6px">{{ title }}</h3>
+        <p>{{ text }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

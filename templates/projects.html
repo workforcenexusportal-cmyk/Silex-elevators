@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Projects</span></div>
+    <h1>Buildings that rise smoothly with Silex.</h1>
+    <p>A showcase of residential, commercial, healthcare and industrial installations across India. (Illustrative gallery for presentation.)</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="gallery">
+      {% for pr in projects %}
+      <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}">
+        <img src="{{ url_for('static', filename='img/' + pr.img) }}" alt="{{ pr.title }}">
+        <div class="tile__body">
+          <div class="tile__type">{{ pr.type }}</div>
+          <h3>{{ pr.title }}</h3>
+          <div class="tile__city">{{ icon('pin') }} {{ pr.city }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

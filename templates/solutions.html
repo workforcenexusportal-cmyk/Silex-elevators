@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Solutions{% endblock %}
+{% block meta_desc %}Silex elevator solutions tailored by building type — residential, office & commercial, hotel, retail, healthcare and public infrastructure.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Solutions</span></div>
+    <h1>The right elevator for every kind of building.</h1>
+    <p>Whatever you're building — a home, an office tower, a hospital or a mall — Silex has a mobility solution engineered for its traffic, aesthetics and budget.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid g-3">
+      {% for s in segments %}
+      <a href="{{ url_for('solution_detail', slug=s.slug) }}" class="pcard reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
+        <div class="pcard__media">
+          <img src="{{ url_for('static', filename='img/' ~ s.img) }}" alt="{{ s.name }} elevators">
+          <span class="pcard__tag">{{ s.name }}</span>
+        </div>
+        <div class="pcard__body">
+          <h3><span class="pcard__ic">{{ icon(s.icon) }}</span>{{ s.name }}</h3>
+          <p>{{ s.tagline }}</p>
+          <span class="pcard__link">Explore solution {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}
