@@ -20,17 +20,28 @@
   var toggle = doc.querySelector(".nav__toggle");
   var links = doc.querySelector(".nav__links");
   if (toggle && links) {
-    toggle.addEventListener("click", function () {
-      var open = links.classList.toggle("open");
+    function setMenu(open) {
+      links.classList.toggle("open", open);
       doc.body.classList.toggle("nav-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) links.scrollTop = 0;
+    }
+
+    toggle.addEventListener("click", function () {
+      setMenu(!links.classList.contains("open"));
     });
     links.addEventListener("click", function (e) {
       if (e.target.closest("a")) {
-        links.classList.remove("open");
-        doc.body.classList.remove("nav-open");
-        toggle.setAttribute("aria-expanded", "false");
+        setMenu(false);
       }
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 980) setMenu(false);
+    });
+
+    doc.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") setMenu(false);
     });
   }
 
