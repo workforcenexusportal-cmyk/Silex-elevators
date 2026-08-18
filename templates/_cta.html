@@ -9,6 +9,7 @@
     <div style="display:flex;gap:14px;flex-wrap:wrap">
       <a href="{{ url_for('contact') }}" class="btn btn--gold">Get a Free Quote {{ icon('arrow') }}</a>
       <a href="tel:{{ cfg.PHONE|replace(' ','') }}" class="btn btn--ghost">{{ icon('phone') }} {{ cfg.PHONE }}</a>
+      <a href="tel:{{ cfg.PHONE_ALT|replace(' ','') }}" class="btn btn--ghost">{{ icon('phone') }} {{ cfg.PHONE_ALT }}</a>
     </div>
   </div>
 </section>

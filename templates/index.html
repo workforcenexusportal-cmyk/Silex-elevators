@@ -6,7 +6,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero__bg">
-    <img src="{{ url_for('static', filename='img/hero.jpg') }}" alt="Panoramic Silex glass elevators">
+    <img src="{{ media.hero }}" alt="Panoramic Silex glass elevators" fetchpriority="high">
   </div>
   <div class="container hero__inner">
     <span class="hero__badge">{{ icon('safety') }} {{ cfg.CERTIFICATION }} · Made in India</span>
@@ -41,7 +41,7 @@
 <section class="section">
   <div class="container split">
     <div class="split__media reveal reveal--left">
-      <img src="{{ url_for('static', filename='img/prod_capsule.jpg') }}" alt="Silex capsule elevator interior">
+      <img src="{{ media.about }}" alt="Silex capsule elevator interior">
       <div class="badge-float"><b>{{ cfg.CERTIFICATION.split(' ')[0] }}</b><span>{{ cfg.CERTIFICATION }}</span></div>
     </div>
     <div class="reveal reveal--right" data-delay="1">
@@ -58,6 +58,19 @@
   </div>
 </section>
 
+<!-- PARTNERS MARQUEE -->
+<section class="section--tight section--navy">
+  <div class="container center" style="margin-bottom:26px">
+    <span class="eyebrow" style="justify-content:center">Technically Associated With</span>
+  </div>
+  <div class="marquee">
+    <div class="marquee__track">
+      {% for p in partners %}<span class="marquee__item">{{ p }}</span>{% endfor %}
+      {% for p in partners %}<span class="marquee__item">{{ p }}</span>{% endfor %}
+    </div>
+  </div>
+</section>
+
 <!-- PRODUCTS -->
 <section class="section section--soft">
   <div class="container">
@@ -66,27 +79,231 @@
       <h2 class="section-title">Elevators for every building</h2>
       <p class="section-lead">Nine engineered product lines — whatever you're building, there's a Silex lift for it.</p>
     </div>
-    <div class="grid g-3 mt-m">
-      {% for p in products %}
-      <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
-        <div class="pcard__media">
-          <img src="{{ url_for('static', filename='img/prod_' + p.slug + '.jpg') }}" alt="{{ p.name }}">
-          {% if p.tag %}<span class="pcard__tag">{{ p.tag }}</span>{% endif %}
-        </div>
-        <div class="pcard__body">
-          <h3>{{ p.name }}</h3>
-          <p>{{ p.short }}</p>
-          <div class="pcard__meta"><span>Capacity <b>{{ p.capacity }}</b></span><span>Speed <b>{{ p.speed }}</b></span></div>
-          <span class="pcard__link">View details {{ icon('arrow') }}</span>
-        </div>
-      </a>
-      {% endfor %}
+    <div class="carousel mt-m" data-carousel>
+      <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Scroll left" data-carousel-prev>{{ icon('arrow') }}</button>
+      <div class="carousel__track" data-carousel-track>
+        {% for p in products %}
+        <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard carousel__item">
+          <div class="pcard__media">
+            <img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy">
+            {% if p.tag %}<span class="pcard__tag">{{ p.tag }}</span>{% endif %}
+          </div>
+          <div class="pcard__body">
+            <h3>{{ p.name }}</h3>
+            <p>{{ p.short }}</p>
+            <div class="pcard__meta"><span>Capacity <b>{{ p.capacity }}</b></span><span>Speed <b>{{ p.speed }}</b></span></div>
+            <span class="pcard__link">View details {{ icon('arrow') }}</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Scroll right" data-carousel-next>{{ icon('arrow') }}</button>
     </div>
     <div class="center mt-m">
       <a href="{{ url_for('products') }}" class="btn btn--navy">See All Products {{ icon('arrow') }}</a>
     </div>
   </div>
 </section>
+
+<!-- VIRTUAL SHOWROOM · BLOG · STAY LIFTED (three panels, horizontal scroll) -->
+<section class="section section--navy">
+  <div class="container">
+    <div class="panels" data-panels>
+      <button class="panels__arrow panels__arrow--prev" type="button" aria-label="Previous section" data-panels-prev>{{ icon('arrow') }}</button>
+      <div class="panels__track" data-panels-track>
+
+        <!-- Panel 1: Virtual Showroom -->
+        <article class="panel">
+          <div class="head-center">
+            <span class="eyebrow">Immersive Experience</span>
+            <h2 class="section-title">Step inside our virtual showroom</h2>
+            <p class="section-lead">One tap opens a 360° gallery room — walk around and see Silex lifts placed in a hotel, a home, a hospital, an industrial plant and more.</p>
+          </div>
+          <div class="vsr-card-wrap mt-m">
+            <button type="button" class="vsr-card" data-vsr-open aria-label="Enter the virtual showroom">
+              <span class="vsr-card__media">
+                <img src="{{ scenes[3].photo }}" alt="" loading="lazy">
+                <span class="vsr-card__badge">360°</span>
+                <span class="vsr-card__play">{{ icon('arrow') }}</span>
+              </span>
+              <span class="vsr-card__body">
+                <span class="vsr-card__kicker">Virtual Showroom</span>
+                <span class="vsr-card__title">Step inside {{ scenes|length }} real settings</span>
+                <span class="vsr-card__text">Hotel, home, hospital, industrial plant &amp; more — enter the gallery, then look around any room in immersive 360°.</span>
+                <span class="pcard__link">Enter showroom {{ icon('arrow') }}</span>
+              </span>
+            </button>
+          </div>
+        </article>
+
+        <!-- Panel 2: Blog -->
+        <article class="panel">
+          <div class="head-center">
+            <span class="eyebrow">Silex Blog</span>
+            <h2 class="section-title">From the Silex journal</h2>
+            <p class="section-lead">Guides and design inspiration to help you choose and care for the perfect lift.</p>
+          </div>
+          <div class="vsr-card-wrap mt-m">
+            <button type="button" class="vsr-card" data-rmodal-open="blog" aria-label="Open the Silex blog">
+              <span class="vsr-card__media">
+                <img src="{{ posts[0].photo }}" alt="" loading="lazy">
+                <span class="vsr-card__badge">{{ posts[:2]|length }} Articles</span>
+                <span class="vsr-card__play">{{ icon('arrow') }}</span>
+              </span>
+              <span class="vsr-card__body">
+                <span class="vsr-card__kicker">Read &amp; Learn</span>
+                <span class="vsr-card__title">Open the Silex journal</span>
+                <span class="vsr-card__text">Tap to browse our latest guides and design inspiration without leaving the page.</span>
+                <span class="pcard__link">Open the blog {{ icon('arrow') }}</span>
+              </span>
+            </button>
+          </div>
+        </article>
+
+        <!-- Panel 3: Stay Lifted -->
+        <article class="panel">
+          <div class="head-center">
+            <span class="eyebrow">Stay Lifted</span>
+            <h2 class="section-title">Safety, tips &amp; maintenance</h2>
+            <p class="section-lead">Keep your lift running smoothly — practical checklists and upkeep advice from our engineers.</p>
+          </div>
+          <div class="vsr-card-wrap mt-m">
+            <button type="button" class="vsr-card" data-rmodal-open="stay" aria-label="Open safety, tips and maintenance">
+              <span class="vsr-card__media">
+                <img src="{{ posts[2].photo if posts|length > 2 else posts[-1].photo }}" alt="" loading="lazy">
+                <span class="vsr-card__badge">Tips</span>
+                <span class="vsr-card__play">{{ icon('arrow') }}</span>
+              </span>
+              <span class="vsr-card__body">
+                <span class="vsr-card__kicker">Stay Lifted</span>
+                <span class="vsr-card__title">Safety, tips &amp; maintenance</span>
+                <span class="vsr-card__text">Tap for practical checklists and upkeep advice to keep your lift running smoothly.</span>
+                <span class="pcard__link">Open tips {{ icon('arrow') }}</span>
+              </span>
+            </button>
+          </div>
+        </article>
+
+      </div>
+      <button class="panels__arrow panels__arrow--next" type="button" aria-label="Next section" data-panels-next>{{ icon('arrow') }}</button>
+    </div>
+    <div class="panels__dots" data-panels-dots></div>
+  </div>
+</section>
+
+<!-- VIRTUAL SHOWROOM · 360° GALLERY ROOM (modal) -->
+<div class="vsr-modal" data-vsr-modal hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Virtual showroom gallery">
+  <div class="vsr-modal__backdrop" data-vsr-close></div>
+  <div class="vsr-modal__inner">
+    <button type="button" class="vsr-modal__close" data-vsr-close aria-label="Close showroom">{{ icon('x') }}</button>
+
+    <div class="vsr-stage" data-vsr-stage>
+      <div class="vsr-ring" data-vsr-ring>
+        {% for scene in scenes %}
+        <figure class="vsr-cell" style="--i:{{ loop.index0 }}"
+                data-place="{{ scene.place }}" data-lift="{{ scene.lift }}" data-note="{{ scene.note }}"
+                data-photo="{{ scene.photo }}">
+          <img src="{{ scene.photo }}" alt="{{ scene.lift }} in a {{ scene.place }}" loading="lazy">
+          <figcaption>
+            <span class="vsr-cell__place">{{ scene.place }}</span>
+            <span class="vsr-cell__enter">{{ icon('search') }} Open 360°</span>
+          </figcaption>
+        </figure>
+        {% endfor %}
+      </div>
+    </div>
+
+    <button type="button" class="vsr-nav vsr-nav--prev" data-vsr-prev aria-label="Previous room">{{ icon('arrow') }}</button>
+    <button type="button" class="vsr-nav vsr-nav--next" data-vsr-next aria-label="Next room">{{ icon('arrow') }}</button>
+
+    <div class="vsr-caption" data-vsr-caption>
+      <span class="eyebrow" data-vsr-place></span>
+      <h3 data-vsr-lift></h3>
+      <p data-vsr-note></p>
+      <div class="vsr-caption__actions">
+        <button type="button" class="btn btn--gold" data-vsr-360>Open 360° View {{ icon('search') }}</button>
+        <a href="{{ url_for('products') }}" class="btn btn--line">See this lift {{ icon('arrow') }}</a>
+        <span class="vsr-counter"><b data-vsr-index>1</b> / {{ scenes|length }}</span>
+      </div>
+    </div>
+
+    <div class="vsr-dots" data-vsr-dots></div>
+  </div>
+</div>
+
+<!-- 360° PANORAMA VIEWER (drag to look around, like Street View) -->
+<div class="pano" data-pano hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="360 degree view">
+  <div class="pano__stage" data-pano-stage>
+    <img class="pano__img" data-pano-img alt="" draggable="false">
+  </div>
+  <div class="pano__grabhint" data-pano-grabhint>
+    <span class="pano__grabhint-inner">{{ icon('search') }} Drag to look around · scroll to zoom</span>
+  </div>
+  <div class="pano__bar">
+    <span class="pano__badge">360°</span>
+    <span class="pano__place" data-pano-place></span>
+  </div>
+  <button type="button" class="pano__zoom pano__zoom--in" data-pano-zoomin aria-label="Zoom in">+</button>
+  <button type="button" class="pano__zoom pano__zoom--out" data-pano-zoomout aria-label="Zoom out">−</button>
+  <button type="button" class="pano__close" data-pano-close aria-label="Close 360 view">{{ icon('x') }}</button>
+</div>
+
+<!-- REVEAL MODALS · Blog + Stay Lifted (open from panel cards) -->
+<div class="rmodal" data-rmodal="blog" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Silex blog">
+  <div class="rmodal__backdrop" data-rmodal-close></div>
+  <div class="rmodal__inner">
+    <button type="button" class="rmodal__close" data-rmodal-close aria-label="Close">{{ icon('x') }}</button>
+    <div class="head-center">
+      <span class="eyebrow">Silex Blog</span>
+      <h2 class="section-title">From the Silex journal</h2>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for post in posts[:2] %}
+      <a href="{{ url_for('blog_post', slug=post.slug) }}" class="pcard">
+        <div class="pcard__media">
+          <img src="{{ post.photo }}" alt="{{ post.title }}" loading="lazy">
+          <span class="pcard__tag">{{ post.category }}</span>
+        </div>
+        <div class="pcard__body">
+          <span class="muted" style="font-size:.82rem">{{ post.date }}</span>
+          <h3 style="margin-top:6px;font-size:1.16rem">{{ post.title }}</h3>
+          <p>{{ post.excerpt }}</p>
+          <span class="pcard__link">Read article {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="center mt-m"><a href="{{ url_for('blog') }}" class="btn btn--gold">Read the full Blog {{ icon('arrow') }}</a></div>
+  </div>
+</div>
+
+<div class="rmodal" data-rmodal="stay" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Safety, tips and maintenance">
+  <div class="rmodal__backdrop" data-rmodal-close></div>
+  <div class="rmodal__inner">
+    <button type="button" class="rmodal__close" data-rmodal-close aria-label="Close">{{ icon('x') }}</button>
+    <div class="head-center">
+      <span class="eyebrow">Stay Lifted</span>
+      <h2 class="section-title">Safety, tips &amp; maintenance</h2>
+    </div>
+    <div class="grid g-3 mt-m">
+      {% for post in posts[2:] %}
+      <a href="{{ url_for('blog_post', slug=post.slug) }}" class="pcard">
+        <div class="pcard__media">
+          <img src="{{ post.photo }}" alt="{{ post.title }}" loading="lazy">
+          <span class="pcard__tag">{{ post.category }}</span>
+        </div>
+        <div class="pcard__body">
+          <span class="muted" style="font-size:.82rem">{{ post.date }}</span>
+          <h3 style="margin-top:6px;font-size:1.16rem">{{ post.title }}</h3>
+          <p>{{ post.excerpt }}</p>
+          <span class="pcard__link">Read article {{ icon('arrow') }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="center mt-m"><a href="{{ url_for('contact') }}" class="btn btn--gold">Talk to Support {{ icon('arrow') }}</a></div>
+  </div>
+</div>
 
 <!-- SERVICES -->
 <section class="section">
@@ -136,17 +353,30 @@
       <h2 class="section-title">Recent installations</h2>
       <p class="section-lead">A glimpse of buildings rising smoothly with Silex elevators.</p>
     </div>
-    <div class="gallery mt-m">
-      {% for pr in projects %}
-      <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}">
-        <img src="{{ url_for('static', filename='img/' + pr.img) }}" alt="{{ pr.title }}">
-        <div class="tile__body">
-          <div class="tile__type">{{ pr.type }}</div>
-          <h3>{{ pr.title }}</h3>
-          <div class="tile__city">{{ icon('pin') }} {{ pr.city }}</div>
+    <div class="works-float mt-m" data-works-float>
+      <div class="works-float__track">
+        {% for pr in projects %}
+        <div class="tile">
+          <img src="{{ pr.photo }}" alt="{{ pr.title }}" loading="lazy">
+          <div class="tile__body">
+            <div class="tile__type">{{ pr.type }}</div>
+            <h3>{{ pr.title }}</h3>
+            <div class="tile__city">{{ icon('pin') }} {{ pr.city }}</div>
+          </div>
         </div>
+        {% endfor %}
+        {# duplicate for a seamless infinite float #}
+        {% for pr in projects %}
+        <div class="tile" aria-hidden="true">
+          <img src="{{ pr.photo }}" alt="" loading="lazy">
+          <div class="tile__body">
+            <div class="tile__type">{{ pr.type }}</div>
+            <h3>{{ pr.title }}</h3>
+            <div class="tile__city">{{ icon('pin') }} {{ pr.city }}</div>
+          </div>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
     <div class="center mt-m"><a href="{{ url_for('projects') }}" class="btn btn--line">View Project Gallery {{ icon('arrow') }}</a></div>
   </div>
@@ -170,19 +400,6 @@
         </div>
       </div>
       {% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- PARTNERS MARQUEE -->
-<section class="section--tight section--navy">
-  <div class="container center" style="margin-bottom:26px">
-    <span class="eyebrow" style="justify-content:center">Technically Associated With</span>
-  </div>
-  <div class="marquee">
-    <div class="marquee__track">
-      {% for p in partners %}<span class="marquee__item">{{ p }}</span>{% endfor %}
-      {% for p in partners %}<span class="marquee__item">{{ p }}</span>{% endfor %}
     </div>
   </div>
 </section>

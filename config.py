@@ -19,8 +19,8 @@ class Config:
     )
 
     # Business contact details (from the official Silex brochure).
-    COMPANY_NAME = "Silex Elevator"
-    COMPANY_TAGLINE = "Enjoy Silky Motion at Affordable Cost"
+    COMPANY_NAME = "Silex Elevator PVT. LTD"
+    COMPANY_TAGLINE = "Elevating spaces with precision and trust"
     PHONE = "+91 85110 33826"
     PHONE_ALT = "+91 93166 64670"
     CONTACT_PERSON = "Yash Vasani"

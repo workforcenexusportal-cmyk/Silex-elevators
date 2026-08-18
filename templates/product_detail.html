@@ -15,7 +15,7 @@
 <section class="section">
   <div class="container split">
     <div class="split__media reveal reveal--left">
-      <img src="{{ url_for('static', filename='img/prod_' + product.slug + '.jpg') }}" alt="{{ product.name }}">
+      <img src="{{ product.photo }}" alt="{{ product.name }}">
       {% if product.tag %}<div class="badge-float"><b>{{ product.tag }}</b><span>{{ product.capacity }}</span></div>{% endif %}
     </div>
     <div class="reveal reveal--right" data-delay="1">
@@ -50,12 +50,44 @@
     <div class="head-center">
       <span class="eyebrow">Specifications</span>
       <h2 class="section-title">Full dimensions &amp; technical data</h2>
-      <p class="section-lead">Straight from the Silex engineering brochure — car sizes, shaft dimensions, capacities and speeds.</p>
+      <p class="section-lead">Straight from the Silex engineering brochure — car sizes, shaft dimensions, capacities and speeds. No PDF needed.</p>
     </div>
-    <div class="imgframe reveal mt-m" style="max-width:960px;margin-inline:auto">
-      <img src="{{ url_for('static', filename='img/spec_' + product.slug + '.jpg') }}" alt="{{ product.name }} specification sheet">
-      <div class="imgframe__cap">{{ product.name }} — technical specification (Silex brochure)</div>
+
+    {% if specs %}
+    {% if specs.summary %}
+    <div class="specgrid reveal mt-m">
+      {% for row in specs.summary %}
+      <div class="specgrid__item">
+        <span class="specgrid__k">{{ row[0] }}</span>
+        <b class="specgrid__v">{{ row[1] }}</b>
+      </div>
+      {% endfor %}
     </div>
+    {% endif %}
+
+    {% if specs.table %}
+    <div class="spectable-wrap reveal mt-m">
+      <table class="spectable">
+        <thead>
+          <tr>{% for h in specs.table.headers %}<th>{{ h }}</th>{% endfor %}</tr>
+        </thead>
+        <tbody>
+          {% for r in specs.table.rows %}
+          <tr>{% for cell in r %}<td>{{ cell }}</td>{% endfor %}</tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if specs.table.note %}<p class="spectable-note">{{ specs.table.note }}</p>{% endif %}
+    {% endif %}
+
+    {% if specs.components %}
+    <div class="reveal mt-m">
+      <span class="eyebrow" style="justify-content:center;display:flex">Key Components</span>
+      <div class="chips mt-s" style="justify-content:center">{% for c in specs.components %}<span class="chip">{{ c }}</span>{% endfor %}</div>
+    </div>
+    {% endif %}
+    {% endif %}
   </div>
 </section>
 
@@ -84,7 +116,7 @@
       {% for p in related %}
       <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard reveal" data-delay="{{ loop.index }}">
         <div class="pcard__media">
-          <img src="{{ url_for('static', filename='img/prod_' + p.slug + '.jpg') }}" alt="{{ p.name }}">
+          <img src="{{ p.photo }}" alt="{{ p.name }}">
         </div>
         <div class="pcard__body">
           <h3>{{ p.name }}</h3>

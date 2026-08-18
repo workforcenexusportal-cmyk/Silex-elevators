@@ -1,8 +1,141 @@
-"""All static site content for Silex Elevator, sourced from the official brochure.
+"""All static site content for Silex Elevator.
 
 Keeping copy here (instead of hard-coded in templates) makes it easy to hand
 the client a single file to review or edit later, and keeps templates clean.
+
+Product & section imagery is served from the Unsplash CDN (curated real
+elevator / lift photography) so the whole site is fully data-driven — swap a
+single URL here to change a picture everywhere it appears.
 """
+
+
+def _img(pid, w=1600):
+    """Build a curated Unsplash CDN image URL from a photo id."""
+    return (
+        "https://images.unsplash.com/photo-"
+        f"{pid}?auto=format&fit=crop&w={w}&q=80"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Curated photography (real lift / elevator imagery, Unsplash CDN)
+# ---------------------------------------------------------------------------
+# One id per product slug — matched to what each product actually is.
+PRODUCT_PHOTOS = {
+    "mrl":              _img("1525273177952-67455d25871f"),  # clean minimalist lobby
+    "passenger-auto":   _img("1758448721149-aa0ce8e1b2c9"),  # office lift lobby
+    "passenger-manual": _img("1785005670379-88abacb8a6cf"),  # simple twin lift doors
+    "capsule":          _img("1564771752795-1f9c48984c44"),  # glowing glass atrium lifts
+    "round-capsule":    _img("1774801890542-c875dab300ea"),  # panoramic glass capsule
+    "hospital":         _img("1764213077578-eab0ab29f949"),  # accessible lift, red doors
+    "goods":            _img("1595392312388-38d093a975e3"),  # industrial goods hoist
+    "car-parking":      _img("1556537696-dc5627064044"),     # multi-level industrial shaft
+    "hydraulic":        _img("1709942772983-e8e9c04ad50b"),  # hydraulic machinery
+}
+
+# Site-wide section imagery.
+MEDIA = {
+    "hero":          _img("1564771789713-8586b829cbeb", 2000),  # night glass lifts
+    "about":         _img("1735178181188-855a87e83dca"),        # warm gold lift doors
+    "cabin":         _img("1774294925489-68f75e2b3b05"),        # modern empty cabin
+    "doors":         _img("1665285255745-f1d9453d109c"),        # ornate luxury doors
+    "components":    _img("1709942772983-e8e9c04ad50b"),        # lift machinery
+    "technology":    _img("1595601265373-612a09303582"),        # futuristic glass shaft
+    "modernization": _img("1746702475459-89ff401cafd8"),        # warm wood cabin interior
+}
+
+# Virtual showroom — cabin finishes & designs (horizontal gallery on Home).
+SHOWROOM = [
+    {
+        "name": "Panoramic Glass Capsule",
+        "tag": "Signature",
+        "note": "360° glass cabin that turns every ride into a landmark view.",
+        "photo": _img("1564771752795-1f9c48984c44"),
+    },
+    {
+        "name": "Titanium Gold Mirror",
+        "tag": "Luxury",
+        "note": "Warm gold-mirror walls for hotels, malls and flagship lobbies.",
+        "photo": _img("1735178181188-855a87e83dca"),
+    },
+    {
+        "name": "Brushed Steel Cabin",
+        "tag": "Modern",
+        "note": "Clean hairline stainless that hides fingerprints in busy towers.",
+        "photo": _img("1774294925489-68f75e2b3b05"),
+    },
+    {
+        "name": "Ornate Heritage Doors",
+        "tag": "Bespoke",
+        "note": "Detailed metalwork landing doors for premium residences.",
+        "photo": _img("1665285255745-f1d9453d109c"),
+    },
+    {
+        "name": "Night Glass Atrium",
+        "tag": "Statement",
+        "note": "Backlit panoramic lifts that glow across a building at night.",
+        "photo": _img("1564771789713-8586b829cbeb"),
+    },
+    {
+        "name": "Minimalist Lobby Line",
+        "tag": "Residential",
+        "note": "Understated finishes engineered for quiet homes and villas.",
+        "photo": _img("1525273177952-67455d25871f"),
+    },
+]
+
+# Virtual showroom SCENES — the same lifts placed in real environments.
+# Powers the circular "step inside" 360° gallery room on the Home page.
+SHOWROOM_SCENES = [
+    {
+        "place": "Luxury Hotel",
+        "lift": "Titanium Gold Capsule",
+        "note": "Warm gold-mirror cabins that make a five-star lobby feel even grander.",
+        "photo": _img("1735178181188-855a87e83dca", 1800),
+    },
+    {
+        "place": "Private Villa",
+        "lift": "Home Elevator",
+        "note": "A whisper-quiet minimalist lift that blends into modern living spaces.",
+        "photo": _img("1525273177952-67455d25871f", 1800),
+    },
+    {
+        "place": "Hospital",
+        "lift": "Bed & Stretcher Lift",
+        "note": "Wide, smooth-stopping cabins built for beds, wheelchairs and quick care.",
+        "photo": _img("1764213077578-eab0ab29f949", 1800),
+    },
+    {
+        "place": "Shopping Mall",
+        "lift": "Panoramic Glass Capsule",
+        "note": "360° glass rides that turn footfall into a landmark experience.",
+        "photo": _img("1564771752795-1f9c48984c44", 1800),
+    },
+    {
+        "place": "Corporate Office",
+        "lift": "Passenger Auto-Door",
+        "note": "High-traffic lifts with fast, level stops for busy business towers.",
+        "photo": _img("1758448721149-aa0ce8e1b2c9", 1800),
+    },
+    {
+        "place": "Industrial Plant",
+        "lift": "Goods & Freight Lift",
+        "note": "Heavy-duty platforms that move tonnes between factory floors safely.",
+        "photo": _img("1595392312388-38d093a975e3", 1800),
+    },
+    {
+        "place": "Skyline Tower",
+        "lift": "Night Glass Atrium",
+        "note": "Backlit panoramic lifts that glow across a skyline after dark.",
+        "photo": _img("1564771789713-8586b829cbeb", 1800),
+    },
+    {
+        "place": "Heritage Residence",
+        "lift": "Ornate Bespoke Lift",
+        "note": "Hand-detailed metalwork doors crafted for premium heritage homes.",
+        "photo": _img("1665285255745-f1d9453d109c", 1800),
+    },
+]
 
 # ---------------------------------------------------------------------------
 # Headline stats (shown on Home + About)
@@ -369,14 +502,14 @@ GLOBAL_NETWORK = [
 # Projects / gallery (illustrative dummy references)
 # ---------------------------------------------------------------------------
 PROJECTS = [
-    {"title": "Riverfront Residency", "city": "Surat", "type": "MRL Elevator", "img": "prod_mrl.jpg"},
-    {"title": "Elifenta Business Hub", "city": "Surat", "type": "Passenger Auto-Door", "img": "prod_passenger-auto.jpg"},
-    {"title": "Skyline Mall", "city": "Ahmedabad", "type": "Round Capsule", "img": "prod_round-capsule.jpg"},
-    {"title": "City Care Hospital", "city": "Rajkot", "type": "Hospital Elevator", "img": "prod_hospital.jpg"},
-    {"title": "Metro Logistics Park", "city": "Mumbai", "type": "Goods Elevator", "img": "prod_goods.jpg"},
-    {"title": "Grand Palace Hotel", "city": "Udaipur", "type": "Capsule Elevator", "img": "prod_capsule.jpg"},
-    {"title": "Green Valley Villas", "city": "Anand", "type": "Hydraulic Elevator", "img": "prod_hydraulic.jpg"},
-    {"title": "Central Parking Tower", "city": "Indore", "type": "Car Parking Elevator", "img": "prod_car-parking.jpg"},
+    {"title": "Riverfront Residency", "city": "Surat", "type": "MRL Elevator", "photo": _img("1626628202501-0c11fde58ebf")},
+    {"title": "Elifenta Business Hub", "city": "Surat", "type": "Passenger Auto-Door", "photo": _img("1758518731135-6d9af1849b25")},
+    {"title": "Skyline Mall", "city": "Ahmedabad", "type": "Round Capsule", "photo": _img("1619155631589-89db583e0bcb")},
+    {"title": "City Care Hospital", "city": "Rajkot", "type": "Hospital Elevator", "photo": _img("1606388653150-62e3347056aa")},
+    {"title": "Metro Logistics Park", "city": "Mumbai", "type": "Goods Elevator", "photo": _img("1556537696-dc5627064044")},
+    {"title": "Grand Palace Hotel", "city": "Udaipur", "type": "Capsule Elevator", "photo": _img("1763898260685-1a5b10346ba9")},
+    {"title": "Green Valley Villas", "city": "Anand", "type": "Hydraulic Elevator", "photo": _img("1602339764055-2fa72b7d0475")},
+    {"title": "Central Parking Tower", "city": "Indore", "type": "Car Parking Elevator", "photo": _img("1595392312388-38d093a975e3")},
 ]
 
 # ---------------------------------------------------------------------------
@@ -412,6 +545,7 @@ BLOG_POSTS = [
         "excerpt": "Machine Room-Less lifts are reshaping Indian construction. Here's "
                    "how they save space, energy and cost compared to traditional systems.",
         "gradient": "g1",
+        "photo": _img("1595601265373-612a09303582"),
         "body": [
             "Machine Room-Less (MRL) elevators place a compact gearless traction "
             "machine inside the hoistway itself, eliminating the separate machine "
@@ -432,6 +566,7 @@ BLOG_POSTS = [
         "excerpt": "Regular checks and an Automatic Rescue Device can prevent most "
                    "elevator emergencies. Use this simple checklist to stay compliant.",
         "gradient": "g4",
+        "photo": _img("1746702475459-89ff401cafd8"),
         "body": [
             "Elevator safety starts with routine preventive maintenance. Frayed "
             "ropes, worn guide shoes and drifting door sensors are the usual "
@@ -451,6 +586,7 @@ BLOG_POSTS = [
         "excerpt": "Your elevator cabin is a first impression. Explore the finishes "
                    "that balance luxury, durability and easy maintenance.",
         "gradient": "g6",
+        "photo": _img("1774801890542-c875dab300ea"),
         "body": [
             "The cabin interior is often the first thing a visitor experiences in a "
             "premium building. Silex offers finishes from Titanium Gold and mirror "
@@ -479,7 +615,7 @@ SEGMENTS = [
         "slug": "residential",
         "name": "Residential",
         "icon": "building",
-        "img": "prod_mrl.jpg",
+        "img": _img("1525273177952-67455d25871f"),
         "tagline": "Silky, energy-smart mobility for homes & apartments",
         "intro": (
             "From independent villas to high-rise apartment towers, Silex "
@@ -498,7 +634,7 @@ SEGMENTS = [
         "slug": "commercial",
         "name": "Office & Commercial",
         "icon": "briefcase",
-        "img": "prod_passenger-auto.jpg",
+        "img": _img("1758448721149-aa0ce8e1b2c9"),
         "tagline": "High-traffic performance for offices & complexes",
         "intro": (
             "Commercial buildings demand fast, dependable vertical transport. "
@@ -517,7 +653,7 @@ SEGMENTS = [
         "slug": "hotel",
         "name": "Hotel & Hospitality",
         "icon": "star",
-        "img": "prod_capsule.jpg",
+        "img": _img("1564771789713-8586b829cbeb"),
         "tagline": "A grand first impression on every floor",
         "intro": (
             "Hospitality is about the experience. Silex capsule and premium "
@@ -536,7 +672,7 @@ SEGMENTS = [
         "slug": "retail",
         "name": "Retail & Malls",
         "icon": "cart",
-        "img": "prod_round-capsule.jpg",
+        "img": _img("1619155631589-89db583e0bcb"),
         "tagline": "Move crowds in style and safety",
         "intro": (
             "Shopping centres need to move large volumes of people smoothly. "
@@ -555,7 +691,7 @@ SEGMENTS = [
         "slug": "healthcare",
         "name": "Healthcare",
         "icon": "cross",
-        "img": "prod_hospital.jpg",
+        "img": _img("1764213077578-eab0ab29f949"),
         "tagline": "Stretcher-ready lifts where every second counts",
         "intro": (
             "Hospitals rely on dependable, spacious elevators for patients, "
@@ -574,7 +710,7 @@ SEGMENTS = [
         "slug": "public-transport",
         "name": "Public & Infrastructure",
         "icon": "transit",
-        "img": "prod_goods.jpg",
+        "img": _img("1595392312388-38d093a975e3"),
         "tagline": "Rugged mobility for stations & public spaces",
         "intro": (
             "Metro stations, parking towers and public infrastructure need "
@@ -710,11 +846,192 @@ FAQS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Social media (dummy handles for the demo site)
+# Social media
 # ---------------------------------------------------------------------------
 SOCIAL_LINKS = [
-    {"name": "Facebook", "icon": "facebook", "url": "https://www.facebook.com/"},
-    {"name": "Instagram", "icon": "instagram", "url": "https://www.instagram.com/"},
-    {"name": "LinkedIn", "icon": "linkedin", "url": "https://www.linkedin.com/"},
-    {"name": "YouTube", "icon": "youtube", "url": "https://www.youtube.com/"},
+    {"name": "Instagram", "icon": "instagram", "url": "https://www.instagram.com/silex.elevator?igsh=MWF6cnFhMGdjOW5kZw=="},
+    {"name": "LinkedIn", "icon": "linkedin", "url": "https://www.linkedin.com/in/silex-elevator-969a3042a?utm_source=share_via&utm_content=profile&utm_medium=member_android"},
 ]
+
+# ---------------------------------------------------------------------------
+# Technical specifications per product (transcribed from the Silex brochure).
+# Each entry has a `summary` (key facts) and an optional dimensional `table`,
+# so the full brochure detail lives on-site and clients never need the PDF.
+# All linear dimensions are in millimetres unless stated otherwise.
+# ---------------------------------------------------------------------------
+_SPEC_NOTE = (
+    "All dimensions in mm. Hoistway walls should be minimum 230 mm brick or "
+    "150 mm RCC. General data — may change without notice; contact us for a "
+    "project-specific drawing."
+)
+
+SPECS = {
+    "mrl": {
+        "summary": [
+            ["Capacity", "6 – 13 passengers (408 – 884 kg)"],
+            ["Drive", "Permanent-magnet gearless traction, VVVF"],
+            ["Door options", "Auto centre-opening or manual telescopic"],
+            ["Rated speed", "Up to 1.0 m/s"],
+            ["Machine room", "Not required (machine-room-less)"],
+        ],
+        "table": {
+            "headers": ["Persons", "Load (kg)", "Car A", "Car B", "Shaft C",
+                        "Shaft D", "Entrance E", "Auto door W×H", "Manual door W×H"],
+            "rows": [
+                ["6", "408", "1200", "900", "1800", "1400", "700", "780×2100", "1450×2350"],
+                ["8", "544", "1300", "1100", "1900", "1600", "800", "880×2100", "1600×2350"],
+                ["10", "680", "1300", "1300", "1900", "1800", "800", "880×2100", "1600×2350"],
+                ["13", "884", "1600", "1400", "2200", "1900", "900", "980×2100", "1700×2350"],
+            ],
+            "note": _SPEC_NOTE,
+        },
+    },
+    "passenger-auto": {
+        "summary": [
+            ["Capacity", "6 – 13 passengers (408 – 884 kg)"],
+            ["Door type", "Automatic centre-opening"],
+            ["Drive", "VVVF variable-speed, collective operation"],
+            ["Rated speed", "Up to 1.5 m/s"],
+            ["Pit / Overhead", "1600 / 4900"],
+        ],
+        "table": {
+            "headers": ["Persons", "Load (kg)", "Platform A", "Platform B",
+                        "Shaft C", "Shaft D", "Entrance E", "Machine room K", "Machine room L"],
+            "rows": [
+                ["6", "408", "1200", "1300", "1700", "1800", "700", "300+C+300", "600+D+1500"],
+                ["8", "544", "1500", "1330", "2000", "1800", "800", "300+C+300", "600+D+1500"],
+                ["10", "680", "1650", "1450", "2150", "2000", "800", "600+C+600", "600+D+1500"],
+                ["13", "884", "1900", "1500", "2400", "2000", "900", "600+C+600", "600+D+1500"],
+            ],
+            "note": _SPEC_NOTE,
+        },
+    },
+    "passenger-manual": {
+        "summary": [
+            ["Capacity", "5 – 13 passengers (340 – 884 kg)"],
+            ["Door type", "Collapsible / swing / imperforated"],
+            ["Drive", "Geared machine, VVVF"],
+            ["Rated speed", "Up to 0.68 m/s"],
+            ["Pit / Overhead", "1600 / 4900"],
+        ],
+        "table": {
+            "headers": ["Persons", "Load (kg)", "Platform A", "Platform B",
+                        "Shaft C", "Shaft D", "Entrance E", "Machine room K", "Machine room L"],
+            "rows": [
+                ["5", "340", "950", "1300", "1350", "1650", "760", "600+C+600", "300+D+1500"],
+                ["5", "340", "1300", "1000", "1700", "1300", "760", "300+C+300", "600+D+1500"],
+                ["6", "408", "1200", "1200", "1600", "1500", "800", "300+C+300", "600+D+1500"],
+                ["6", "544", "1500", "1200", "1900", "1500", "800", "300+C+300", "600+D+1500"],
+                ["13", "884", "1900", "1500", "2400", "1850", "900", "600+C+600", "300+D+1500"],
+            ],
+            "note": _SPEC_NOTE,
+        },
+    },
+    "capsule": {
+        "summary": [
+            ["Capacity", "10 – 16 passengers (680 – 1088 kg)"],
+            ["Cabin", "SS / MS with glass vision panels"],
+            ["Drive", "AC VVVF for jerk-free ride"],
+            ["Controller", "PLC full-proof, fully collective-selective"],
+            ["Rated speed", "Up to 1.5 m/s"],
+        ],
+        "table": {
+            "headers": ["Persons", "Load (kg)", "Car A", "Car B", "Car G",
+                        "Shaft C", "Shaft D", "Shaft F", "Shaft H", "Entrance E"],
+            "rows": [
+                ["10", "680", "1250", "1300", "250", "2200", "1450", "1480", "580", "800"],
+                ["13", "884", "1400", "1400", "300", "2400", "1550", "1630", "650", "900"],
+                ["16", "1088", "1550", "1500", "350", "2800", "1780", "1650", "790", "1000"],
+            ],
+            "note": _SPEC_NOTE + " Table shown for three-side-glass capsule cabins.",
+        },
+    },
+    "round-capsule": {
+        "summary": [
+            ["Capacity", "10 – 16 passengers (680 – 1088 kg)"],
+            ["Cabin", "360° curved-glass panoramic capsule"],
+            ["Drive", "AC VVVF for smooth motion"],
+            ["Rated speed", "Up to 1.5 m/s"],
+            ["Finish", "Bespoke lighting packages available"],
+        ],
+        "table": {
+            "headers": ["Persons", "Load (kg)", "Car A", "Car B", "Car J", "Car G",
+                        "Shaft C", "Shaft D", "Shaft F", "Shaft H", "Entrance E"],
+            "rows": [
+                ["10", "680", "1100", "1300", "1400", "650", "2200", "1325", "1330", "1100", "800"],
+                ["13", "884", "1200", "1400", "1550", "700", "2400", "1425", "1430", "1100", "900"],
+                ["16", "1088", "1300", "1500", "1700", "750", "2800", "1530", "1530", "1200", "1000"],
+            ],
+            "note": _SPEC_NOTE,
+        },
+    },
+    "hospital": {
+        "summary": [
+            ["Capacity", "8 – 12 passengers (544 – 816 kg)"],
+            ["Door type", "Collapsible"],
+            ["Rated speed", "0.3 – 0.5 m/s"],
+            ["Pit / Overhead", "1600 / 1600"],
+            ["Hoisting beam", "3500 kg capacity"],
+        ],
+        "table": {
+            "headers": ["Persons", "Load (kg)", "Platform A", "Platform B",
+                        "Shaft C", "Shaft D", "Entrance E", "Machine room K", "Machine room L"],
+            "rows": [
+                ["8 – 12", "544 – 816", "1200", "2300", "1900", "2400", "1600", "600+C+600", "600+D+1800"],
+            ],
+            "note": _SPEC_NOTE,
+        },
+    },
+    "goods": {
+        "summary": [
+            ["Capacity", "500 – 3000 kg"],
+            ["Rated speed", "0.25 – 1.0 m/s"],
+            ["Pit / Overhead", "1600 / 5100"],
+            ["Loading hook", "1-tonne machine-room hook"],
+            ["Doors", "Wide openings for pallets & trolleys"],
+        ],
+        "table": {
+            "headers": ["Load (kg)", "Car A", "Car B", "Shaft C", "Shaft D",
+                        "Entrance E", "Machine room K", "Machine room L"],
+            "rows": [
+                ["500", "1500", "1200", "1900", "1600", "1500", "2500", "4100"],
+                ["1000", "1500", "1800", "2300", "2000", "1800", "2500", "4700"],
+                ["1500", "1700", "2000", "2600", "2300", "2100", "2600", "4900"],
+                ["2000", "1700", "2500", "2600", "2900", "2400", "2600", "5400"],
+                ["2500", "2000", "2500", "2900", "2900", "2700", "2900", "5400"],
+                ["3000", "2000", "3000", "2900", "3400", "2700", "2900", "5900"],
+            ],
+            "note": _SPEC_NOTE,
+        },
+    },
+    "car-parking": {
+        "summary": [
+            ["Segment", "Industrial applications & car parks"],
+            ["Max. travel", "100 m (higher travel on request)"],
+            ["Max. load", "500 – 5000 kg per vehicle"],
+            ["Max. speed", "0.5 m/s (other speeds on request)"],
+            ["Group size", "Simplex"],
+        ],
+    },
+    "hydraulic": {
+        "summary": [
+            ["Capacity", "225 – 1600 kg (3 – 20 persons)"],
+            ["Drive", "Hydraulic piston power-pack"],
+            ["Machine room", "No overhead room required"],
+            ["Rated speed", "Up to 0.5 m/s"],
+            ["Safety", "Pipe-rupture & overload valves"],
+        ],
+        "components": [
+            "EV-100 control valve", "Hand pump", "Guide rail",
+            "Overload system", "Pipe-rupture valve", "Screw pump",
+            "Elevator rope", "Door sensor",
+        ],
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Attach curated photography to each product so templates stay data-driven.
+# ---------------------------------------------------------------------------
+_FALLBACK_PHOTO = _img("1758448721149-aa0ce8e1b2c9")
+for _product in PRODUCTS:
+    _product["photo"] = PRODUCT_PHOTOS.get(_product["slug"], _FALLBACK_PHOTO)

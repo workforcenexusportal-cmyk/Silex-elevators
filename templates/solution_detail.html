@@ -27,7 +27,7 @@
     </div>
     <div class="reveal" data-delay="1">
       <div class="imgframe">
-        <img src="{{ url_for('static', filename='img/' ~ segment.img) }}" alt="{{ segment.name }} elevators">
+        <img src="{{ segment.img }}" alt="{{ segment.name }} elevators">
         <div class="imgframe__cap">{{ icon(segment.icon) }} {{ segment.name }} mobility</div>
       </div>
     </div>
@@ -44,7 +44,7 @@
       {% for p in seg_products %}
       <a href="{{ url_for('product_detail', slug=p.slug) }}" class="pcard reveal" data-delay="{{ loop.index }}">
         <div class="pcard__media">
-          <img src="{{ url_for('static', filename='img/prod_' + p.slug + '.jpg') }}" alt="{{ p.name }}">
+          <img src="{{ p.photo }}" alt="{{ p.name }}">
           {% if p.tag %}<span class="pcard__tag">{{ p.tag }}</span>{% endif %}
         </div>
         <div class="pcard__body">

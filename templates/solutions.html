@@ -18,7 +18,7 @@
       {% for s in segments %}
       <a href="{{ url_for('solution_detail', slug=s.slug) }}" class="pcard reveal" data-delay="{{ loop.index0 % 3 + 1 }}">
         <div class="pcard__media">
-          <img src="{{ url_for('static', filename='img/' ~ s.img) }}" alt="{{ s.name }} elevators">
+          <img src="{{ s.img }}" alt="{{ s.name }} elevators">
           <span class="pcard__tag">{{ s.name }}</span>
         </div>
         <div class="pcard__body">

@@ -47,6 +47,7 @@ def create_app():
             "csrf_token": get_csrf_token,
             "canonical_url": request.base_url,
             "social_links": content.SOCIAL_LINKS,
+            "media": content.MEDIA,
         }
 
     # -- Pages ---------------------------------------------------------------
@@ -55,12 +56,15 @@ def create_app():
         return render_template(
             "index.html",
             stats=content.STATS,
-            products=content.PRODUCTS[:6],
+            products=content.PRODUCTS,
             services=content.SERVICES[:3],
             why_us=content.WHY_US,
             projects=content.PROJECTS[:6],
             testimonials=content.TESTIMONIALS,
             partners=content.PARTNERS,
+            posts=content.BLOG_POSTS[:3],
+            showroom=content.SHOWROOM,
+            scenes=content.SHOWROOM_SCENES,
         )
 
     @app.route("/about")
@@ -87,6 +91,7 @@ def create_app():
         return render_template(
             "product_detail.html",
             product=product,
+            specs=content.SPECS.get(slug),
             cabin_finishes=content.CABIN_FINISHES,
             fixtures=content.FIXTURES,
             related=related,

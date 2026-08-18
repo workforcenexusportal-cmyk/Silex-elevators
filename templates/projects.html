@@ -16,7 +16,7 @@
     <div class="gallery">
       {% for pr in projects %}
       <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}">
-        <img src="{{ url_for('static', filename='img/' + pr.img) }}" alt="{{ pr.title }}">
+        <img src="{{ pr.photo }}" alt="{{ pr.title }}">
         <div class="tile__body">
           <div class="tile__type">{{ pr.type }}</div>
           <h3>{{ pr.title }}</h3>
