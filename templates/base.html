@@ -20,15 +20,15 @@
   <meta name="twitter:description" content="{{ self.meta_desc() }}">
   <meta name="twitter:image" content="{{ url_for('static', filename='img/logo-enterprise.png', _external=True) }}">
 
-  <meta name="theme-color" content="#070b14">
+  <meta name="theme-color" content="#030a24">
   <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo-enterprise.png') }}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=26">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 2l19 11v22L24 46 5 35V13z' fill='%230f1e3d'/><path d='M31 17c-2-2-5-3-8-2.6-3 .4-4.6 2.4-4.4 4.6.2 2.2 2 3.2 5.4 4 3.4.8 4.2 1.6 4.3 2.7.1 1.3-1.3 2.4-3.6 2.5-2.4.1-4.2-.8-5.7-2.3' fill='none' stroke='%23c9a24b' stroke-width='3.4' stroke-linecap='round'/></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=29">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 2l19 11v22L24 46 5 35V13z' fill='%230a1738'/><path d='M31 17c-2-2-5-3-8-2.6-3 .4-4.6 2.4-4.4 4.6.2 2.2 2 3.2 5.4 4 3.4.8 4.2 1.6 4.3 2.7.1 1.3-1.3 2.4-3.6 2.5-2.4.1-4.2-.8-5.7-2.3' fill='none' stroke='%23c3ccdb' stroke-width='3.4' stroke-linecap='round'/></svg>">
 
   <!-- Structured data -->
   <script type="application/ld+json">
@@ -66,31 +66,31 @@
   {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <!-- ===== Elevator intro · zoom into the logo lift, doors open onto the site ===== -->
-  <div class="lift-intro" data-lift-intro aria-hidden="true">
-    <!-- the brand logo we zoom into -->
-    <div class="lift-intro__stage" data-lift-stage>
-      <img class="lift-intro__logo-img" data-lift-logo
-           src="{{ url_for('static', filename='img/logo-enterprise.png') }}" alt="{{ cfg.COMPANY_NAME }}">
-    </div>
-
-    <!-- brushed-steel lift doors that take over as the zoom peaks -->
-    <div class="lift-intro__doors" data-lift-doors>
-      <div class="lift-intro__door lift-intro__door--l"></div>
-      <div class="lift-intro__door lift-intro__door--r"></div>
-      <span class="lift-intro__panelbtns" aria-hidden="true">
-        <span></span><span></span>
-      </span>
-      <span class="lift-intro__seam"></span>
-      <span class="lift-intro__floornum" data-lift-floor>G</span>
+  <!-- ===== Logo splash · shows the brand mark on load, then fades to reveal the site ===== -->
+  <div id="silex-splash" role="status" aria-label="Loading {{ cfg.COMPANY_NAME }}">
+    <div class="silex-splash__mark">
+      <img class="silex-splash__logo" src="{{ url_for('static', filename='img/logo-enterprise-full.png') }}?v=29" alt="{{ cfg.COMPANY_NAME }}">
+      <span class="silex-splash__bar"><span></span></span>
     </div>
   </div>
+  <script>
+    (function () {
+      function hideSplash() {
+        var s = document.getElementById('silex-splash');
+        if (!s) return;
+        s.classList.add('is-hide');
+        setTimeout(function () { if (s && s.parentNode) s.parentNode.removeChild(s); }, 600);
+      }
+      window.addEventListener('load', function () { setTimeout(hideSplash, 650); });
+      setTimeout(hideSplash, 4500); // safety: never block the UI
+    })();
+  </script>
 
   <header class="nav">
     <div class="container nav__inner">
       <a class="brand" href="{{ url_for('home') }}" aria-label="{{ cfg.COMPANY_NAME }} home">
         <span class="brand__mark">
-          <img class="brand__logo" src="{{ url_for('static', filename='img/logo-enterprise-full.png') }}" alt="{{ cfg.COMPANY_NAME }} logo">
+          <img class="brand__logo" src="{{ url_for('static', filename='img/logo-enterprise-full.png') }}?v=29" alt="{{ cfg.COMPANY_NAME }} logo">
         </span>
         <span class="brand__wordmark">
           <span class="brand__name">{{ cfg.COMPANY_NAME }}</span>
@@ -166,7 +166,8 @@
       <div class="footer__grid">
         <div class="footer__brand">
           <a class="brand--foot" href="{{ url_for('home') }}" aria-label="{{ cfg.COMPANY_NAME }}">
-            <img src="{{ url_for('static', filename='img/logo-enterprise-full.png') }}" alt="{{ cfg.COMPANY_NAME }} logo">
+            <span class="brand--foot__name">Silex PVT. LTD</span>
+            <span class="brand--foot__sub">Premium Elevators</span>
           </a>
           <p>{{ cfg.COMPANY_TAGLINE }}. {{ cfg.CERTIFICATION }} manufacturer, supplier &amp; exporter of premium elevators — proudly engineered in India.</p>
           <a href="{{ url_for('brochure') }}" class="btn btn--line btn--sm" style="margin-top:18px">{{ icon('arrow') }} Download Brochure (PDF)</a>
@@ -236,6 +237,6 @@
     </div>
   </div>
 
-  <script src="{{ url_for('static', filename='js/main.js') }}?v=26" defer></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=29" defer></script>
 </body>
 </html>
