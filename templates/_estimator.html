@@ -68,11 +68,20 @@
   };
   var use = document.getElementById("est-use");
   var capLabel = document.getElementById("est-cap-label");
+  var quote = document.getElementById("est-quote");
+  var more = document.getElementById("est-more");
+
+  function setLinks(m) {
+    quote.setAttribute("href", "/contact?type=" + encodeURIComponent(m.type));
+    more.setAttribute("href", "/products/" + m.slug);
+  }
   function syncUnit() {
     var m = MAP[use.value];
     capLabel.textContent = m.unit;
+    setLinks(m);
   }
-  use.addEventListener("change", syncUnit); syncUnit();
+  use.addEventListener("change", syncUnit);
+  syncUnit(); // ensure the quote / product links always work, even before "Recommend"
 
   document.getElementById("est-go").addEventListener("click", function () {
     var m = MAP[use.value];
@@ -81,8 +90,7 @@
     document.getElementById("est-r-cap").textContent = m.cap;
     document.getElementById("est-r-speed").textContent = m.speed;
     document.getElementById("est-r-for").textContent = m.best;
-    document.getElementById("est-quote").setAttribute("href", "/contact?type=" + encodeURIComponent(m.type));
-    document.getElementById("est-more").setAttribute("href", "/products/" + m.slug);
+    setLinks(m);
   });
 })();
 </script>
