@@ -598,4 +598,137 @@
     if (!img.hasAttribute("loading")) img.setAttribute("loading", "lazy");
     img.setAttribute("decoding", "async");
   });
+
+  /* ---- AI site assistant (chat widget) ---------------------------------- */
+  (function () {
+    var fab = doc.getElementById("chatFab");
+    var panel = doc.getElementById("chatbot");
+    var body = doc.getElementById("chatBody");
+    var chips = doc.getElementById("chatChips");
+    var form = doc.getElementById("chatForm");
+    var input = doc.getElementById("chatInput");
+    if (!fab || !panel || !body || !form || !input) return;
+
+    var greeted = false;
+    var busy = false;
+
+    function scrollDown() { body.scrollTop = body.scrollHeight; }
+
+    function addMsg(text, who) {
+      var row = doc.createElement("div");
+      row.className = "chat-msg chat-msg--" + who;
+      var bubble = doc.createElement("div");
+      bubble.className = "chat-bubble";
+      // Preserve line breaks from the assistant, escape everything else.
+      String(text).split("\n").forEach(function (line, i) {
+        if (i) bubble.appendChild(doc.createElement("br"));
+        bubble.appendChild(doc.createTextNode(line));
+      });
+      row.appendChild(bubble);
+      body.appendChild(row);
+      scrollDown();
+      return bubble;
+    }
+
+    function addLinks(links) {
+      if (!links || !links.length) return;
+      var wrap = doc.createElement("div");
+      wrap.className = "chat-links";
+      links.forEach(function (l) {
+        var a = doc.createElement("a");
+        a.className = "chat-link";
+        a.href = l.url;
+        a.textContent = l.label;
+        if (/^https?:/i.test(l.url)) { a.target = "_blank"; a.rel = "noopener"; }
+        wrap.appendChild(a);
+      });
+      body.appendChild(wrap);
+      scrollDown();
+    }
+
+    function renderChips(list) {
+      chips.innerHTML = "";
+      (list || []).forEach(function (label) {
+        var b = doc.createElement("button");
+        b.type = "button";
+        b.className = "chat-chip";
+        b.textContent = label;
+        b.addEventListener("click", function () { send(label); });
+        chips.appendChild(b);
+      });
+    }
+
+    function typing(on) {
+      var ex = doc.getElementById("chatTyping");
+      if (on) {
+        if (ex) return;
+        var row = doc.createElement("div");
+        row.className = "chat-msg chat-msg--bot";
+        row.id = "chatTyping";
+        row.innerHTML = '<div class="chat-bubble chat-typing"><span></span><span></span><span></span></div>';
+        body.appendChild(row);
+        scrollDown();
+      } else if (ex) { ex.remove(); }
+    }
+
+    function send(text) {
+      text = (text || "").trim();
+      if (!text || busy) return;
+      addMsg(text, "user");
+      renderChips([]);
+      input.value = "";
+      busy = true;
+      typing(true);
+      fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        typing(false);
+        addMsg(data.reply, "bot");
+        addLinks(data.links);
+        renderChips(data.chips);
+        busy = false;
+      }).catch(function () {
+        typing(false);
+        addMsg("Sorry, I couldn't reach the server. Please try again, or call us at " +
+               "+91 85110 33826.", "bot");
+        busy = false;
+      });
+    }
+
+    function greet() {
+      if (greeted) return;
+      greeted = true;
+      addMsg("Hi! 👋 I'm the Silex Assistant. Ask me about our elevators, pricing, " +
+             "AMC plans or how to reach us.", "bot");
+      renderChips(["Products", "Get a quote", "AMC & maintenance", "Contact"]);
+    }
+
+    function openChat() {
+      panel.classList.add("is-open");
+      panel.setAttribute("aria-hidden", "false");
+      fab.setAttribute("aria-expanded", "true");
+      doc.body.classList.add("chat-open");
+      greet();
+      window.setTimeout(function () { input.focus(); }, 250);
+    }
+    function closeChat() {
+      panel.classList.remove("is-open");
+      panel.setAttribute("aria-hidden", "true");
+      fab.setAttribute("aria-expanded", "false");
+      doc.body.classList.remove("chat-open");
+    }
+
+    fab.addEventListener("click", function () {
+      if (panel.classList.contains("is-open")) closeChat(); else openChat();
+    });
+    var closeBtn = doc.getElementById("chatClose");
+    if (closeBtn) closeBtn.addEventListener("click", closeChat);
+    form.addEventListener("submit", function (e) { e.preventDefault(); send(input.value); });
+    doc.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && panel.classList.contains("is-open")) closeChat();
+    });
+  })();
 })();
+

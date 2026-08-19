@@ -7,6 +7,7 @@ download. Designed to deploy cleanly on PythonAnywhere.
 import csv
 import io
 import os
+import re
 import secrets
 from datetime import datetime
 from functools import wraps
@@ -15,16 +16,45 @@ from flask import (
     Flask, render_template, request, redirect, url_for, flash, abort,
     session, send_from_directory, Response, make_response,
 )
+from werkzeug.utils import secure_filename
 
 import content
+import chatbot
 import db
+import security
 from config import Config
+
+
+# Image types accepted by the gallery manager, with magic-byte verification so
+# a renamed non-image file can't be uploaded.
+GALLERY_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
+
+
+def _is_allowed_image(filename, head):
+    """Return True only if the extension is allowed AND the file's magic bytes
+    match that image type (defends against disguised/malicious uploads)."""
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in GALLERY_EXTS:
+        return False
+    if head[:3] == b"\xff\xd8\xff":                       # JPEG
+        return ext in {".jpg", ".jpeg"}
+    if head[:8] == b"\x89PNG\r\n\x1a\n":                  # PNG
+        return ext == ".png"
+    if head[:6] in (b"GIF87a", b"GIF89a"):                # GIF
+        return ext == ".gif"
+    if head[:4] == b"RIFF" and head[8:12] == b"WEBP":     # WEBP
+        return ext == ".webp"
+    if head[4:8] == b"ftyp":                              # AVIF/HEIF container
+        return ext == ".avif"
+    return False
+
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+    security.init_security(app)
 
     # -- CSRF (lightweight, session based) -----------------------------------
     def get_csrf_token():
@@ -126,16 +156,51 @@ def create_app():
         for name in names:
             if name.startswith("."):
                 continue
-            if os.path.splitext(name)[1].lower() in exts:
-                photos.append({
-                    "src": url_for("static", filename=f"img/gallery/{name}"),
-                    "alt": os.path.splitext(name)[0].replace("-", " ").replace("_", " ").title(),
-                })
+            if os.path.splitext(name)[1].lower() not in exts:
+                continue
+            # Strip any (possibly doubled) image extensions to derive a caption.
+            base = name
+            while os.path.splitext(base)[1].lower() in exts:
+                base = os.path.splitext(base)[0]
+            words = base.replace("-", " ").replace("_", " ").strip()
+            # Hash-style file names (random hex) get no caption.
+            caption = "" if re.fullmatch(r"[0-9a-fA-F]{12,}", base) else words.title()
+            photos.append({
+                "file": name,
+                "src": url_for("static", filename=f"img/gallery/{name}"),
+                "alt": caption or "Silex Elevator installation",
+                "caption": caption,
+            })
         return photos
 
     @app.route("/gallery")
     def gallery():
         return render_template("gallery.html", photos=_gallery_photos())
+
+    # -- AI site assistant (grounded in site content, no external API) --------
+    @app.route("/api/chat", methods=["POST"])
+    @security.rate_limit(30, 60)          # 30 chat messages / minute / IP
+    def api_chat():
+        data = request.get_json(silent=True) or {}
+        message = (data.get("message") or "").strip()[:500]
+        if not message:
+            return {
+                "reply": "Ask me anything about Silex elevators — products, pricing, AMC or contact.",
+                "links": [],
+                "chips": ["Products", "Get a quote", "AMC & maintenance", "Contact"],
+            }
+        res = chatbot.answer(message)
+        links = []
+        for lk in res.get("links", []):
+            url = lk.get("url")
+            if not url and lk.get("endpoint"):
+                try:
+                    url = url_for(lk["endpoint"], **lk.get("kwargs", {}))
+                except Exception:
+                    url = None
+            if url:
+                links.append({"label": lk["label"], "url": url})
+        return {"reply": res["reply"], "links": links, "chips": res.get("chips", [])}
 
     @app.route("/why-us")
     def why_us():
@@ -199,6 +264,7 @@ def create_app():
 
     # -- Careers -------------------------------------------------------------
     @app.route("/careers", methods=["GET", "POST"])
+    @security.rate_limit(6, 60)           # 6 applications / minute / IP
     def careers():
         if request.method == "POST":
             if (request.form.get("website") or "").strip():
@@ -288,6 +354,7 @@ def create_app():
         return render_template("search.html", q=q, results=results)
 
     @app.route("/contact", methods=["GET", "POST"])
+    @security.rate_limit(6, 60)           # 6 enquiry submits / minute / IP
     def contact():
         if request.method == "POST":
             # Honeypot: real users never fill the hidden "website" field.
@@ -343,6 +410,7 @@ def create_app():
         return wrapped
 
     @app.route("/admin/login", methods=["GET", "POST"])
+    @security.rate_limit(8, 300)          # 8 login attempts / 5 min / IP
     def admin_login():
         if session.get("admin"):
             return redirect(url_for("admin"))
@@ -354,8 +422,14 @@ def create_app():
             pw = request.form.get("password") or ""
             if (user == app.config["ADMIN_USER"]
                     and secrets.compare_digest(pw, app.config["ADMIN_PASSWORD"])):
+                # Prevent session fixation: start a fresh session on login.
+                session.clear()
                 session["admin"] = True
+                session.permanent = True
                 nxt = request.args.get("next") or url_for("admin")
+                # Only allow relative, same-site redirect targets.
+                if not nxt.startswith("/") or nxt.startswith("//"):
+                    nxt = url_for("admin")
                 return redirect(nxt)
             flash("Invalid username or password.", "error")
         return render_template("admin_login.html")
@@ -375,6 +449,7 @@ def create_app():
             enquiries=enquiries,
             total=len(enquiries),
             applications=applications,
+            gallery=_gallery_photos(),
         )
 
     @app.route("/admin/export.csv")
@@ -398,6 +473,67 @@ def create_app():
             "attachment; filename=silex-enquiries.csv"
         )
         return out
+
+    # -- Admin · Gallery management ------------------------------------------
+    @app.route("/admin/gallery/upload", methods=["POST"])
+    @login_required
+    @security.rate_limit(30, 60)
+    def admin_gallery_upload():
+        if not csrf_ok():
+            flash("Your session expired. Please try again.", "error")
+            return redirect(url_for("admin") + "#gallery")
+        folder = os.path.join(app.static_folder, "img", "gallery")
+        os.makedirs(folder, exist_ok=True)
+        saved, skipped = 0, 0
+        for f in request.files.getlist("photos"):
+            if not f or not f.filename:
+                continue
+            head = f.stream.read(32)
+            f.stream.seek(0)
+            if not _is_allowed_image(f.filename, head):
+                skipped += 1
+                continue
+            name = secure_filename(f.filename)
+            if not name:
+                skipped += 1
+                continue
+            # Never overwrite an existing photo.
+            dest = os.path.join(folder, name)
+            if os.path.exists(dest):
+                stem, ext = os.path.splitext(name)
+                name = f"{stem}-{secrets.token_hex(4)}{ext}"
+                dest = os.path.join(folder, name)
+            f.save(dest)
+            saved += 1
+        if saved:
+            flash(f"Uploaded {saved} photo(s) to the gallery.", "success")
+        if skipped:
+            flash(f"Skipped {skipped} file(s) — only real image files are allowed.", "error")
+        if not saved and not skipped:
+            flash("Please choose at least one image to upload.", "error")
+        return redirect(url_for("admin") + "#gallery")
+
+    @app.route("/admin/gallery/delete", methods=["POST"])
+    @login_required
+    def admin_gallery_delete():
+        if not csrf_ok():
+            flash("Your session expired. Please try again.", "error")
+            return redirect(url_for("admin") + "#gallery")
+        folder = os.path.abspath(os.path.join(app.static_folder, "img", "gallery"))
+        safe = os.path.basename((request.form.get("file") or "").strip())
+        target = os.path.abspath(os.path.join(folder, safe))
+        # Path-traversal safe: the resolved target must sit inside the folder.
+        if (safe and target.startswith(folder + os.sep)
+                and os.path.isfile(target)
+                and os.path.splitext(safe)[1].lower() in GALLERY_EXTS):
+            try:
+                os.remove(target)
+                flash("Photo removed from the gallery.", "success")
+            except OSError:
+                flash("Could not remove that photo.", "error")
+        else:
+            flash("That photo no longer exists.", "error")
+        return redirect(url_for("admin") + "#gallery")
 
     # -- SEO -----------------------------------------------------------------
     @app.route("/robots.txt")
@@ -436,9 +572,38 @@ def create_app():
         return Response(xml, mimetype="application/xml")
 
     # -- Errors --------------------------------------------------------------
+    @app.errorhandler(400)
+    def bad_request(_e):
+        return render_template("error.html", code=400,
+                               title="Bad request",
+                               message="We couldn't process that request."), 400
+
+    @app.errorhandler(403)
+    def forbidden(_e):
+        return render_template("error.html", code=403,
+                               title="Access denied",
+                               message="You don't have permission to view this page."), 403
+
     @app.errorhandler(404)
     def not_found(_e):
         return render_template("404.html"), 404
+
+    @app.errorhandler(413)
+    def too_large(_e):
+        return render_template("error.html", code=413,
+                               title="Request too large",
+                               message="The data you sent was too large."), 413
+
+    @app.errorhandler(429)
+    def too_many(_e):
+        return render_template("429.html"), 429
+
+    @app.errorhandler(500)
+    def server_error(_e):
+        # Never leak stack traces to visitors.
+        return render_template("error.html", code=500,
+                               title="Something went wrong",
+                               message="An unexpected error occurred. Please try again."), 500
 
     return app
 
@@ -447,4 +612,6 @@ app = create_app()
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Debug is opt-in via env only, so tracebacks never leak in production.
+    debug = os.environ.get("FLASK_DEBUG", "").lower() in ("1", "true", "yes", "on")
+    app.run(debug=debug)

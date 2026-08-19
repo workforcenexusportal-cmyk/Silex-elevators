@@ -120,7 +120,7 @@
 {% endblock %}
 
 {% block head_extra %}
-<script>
+<script nonce="{{ csp_nonce }}">
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-role]');
     if (!t) return;

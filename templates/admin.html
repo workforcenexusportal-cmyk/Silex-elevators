@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% from "_icons.html" import icon %}
-{% block title %}Enquiries{% endblock %}
+{% block title %}Admin Dashboard{% endblock %}
 {% block meta_desc %}Silex Elevator admin dashboard.{% endblock %}
 
 {% block content %}
-<section class="section" style="padding-top:140px">
+<section class="section admin" style="padding-top:132px">
   <div class="container">
-    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between">
+    <div class="admin__head">
       <div>
-        <span class="eyebrow">Dashboard</span>
-        <h1 class="section-title" style="font-size:clamp(1.7rem,3vw,2.4rem)">Enquiries <span style="color:var(--gold-dk)">({{ total }})</span></h1>
+        <span class="eyebrow">Management Console</span>
+        <h1 class="section-title" style="font-size:clamp(1.7rem,3vw,2.4rem)">Welcome back, {{ cfg.ADMIN_USER|capitalize }}</h1>
+        <p class="muted" style="margin-top:6px">{{ cfg.COMPANY_NAME }} · signed in as administrator</p>
       </div>
       <div class="chips">
         <a href="{{ url_for('admin_export') }}" class="btn btn--navy btn--sm">{{ icon('arrow') }} Export CSV</a>
@@ -17,6 +18,31 @@
       </div>
     </div>
 
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+      <div class="flash flash--{{ category }}" style="margin-top:16px">{{ icon('safety') }}<span>{{ message }}</span></div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="admin__stats">
+      <a href="#enquiries" class="admin__stat">
+        <span class="admin__stat-n">{{ total }}</span>
+        <span class="admin__stat-l">Enquiries</span>
+      </a>
+      <a href="#applications" class="admin__stat">
+        <span class="admin__stat-n">{{ applications|length }}</span>
+        <span class="admin__stat-l">Applications</span>
+      </a>
+      <a href="#gallery" class="admin__stat">
+        <span class="admin__stat-n">{{ gallery|length }}</span>
+        <span class="admin__stat-l">Gallery Photos</span>
+      </a>
+    </div>
+
+    <div id="enquiries" style="margin-top:44px">
+      <span class="eyebrow">Leads</span>
+      <h2 class="section-title" style="font-size:clamp(1.5rem,2.6vw,2rem)">Enquiries <span style="color:var(--gold-dk)">({{ total }})</span></h2>
+    </div>
     {% if enquiries %}
     <div class="imgframe reveal mt-m" style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;min-width:820px;font-size:.9rem">
@@ -54,7 +80,7 @@
     </div>
     {% endif %}
 
-    <div style="margin-top:52px">
+    <div id="applications" style="margin-top:52px">
       <span class="eyebrow">Careers</span>
       <h2 class="section-title" style="font-size:clamp(1.5rem,2.6vw,2rem)">Job Applications <span style="color:var(--gold-dk)">({{ applications|length }})</span></h2>
     </div>
@@ -94,6 +120,63 @@
       <p class="muted">No job applications yet. Submissions from the Careers page will appear here.</p>
     </div>
     {% endif %}
+
+    <div id="gallery" style="margin-top:52px">
+      <span class="eyebrow">Content</span>
+      <h2 class="section-title" style="font-size:clamp(1.5rem,2.6vw,2rem)">Gallery Manager <span style="color:var(--gold-dk)">({{ gallery|length }})</span></h2>
+      <p class="muted" style="margin-top:6px">Upload new installation photos or remove existing ones. Changes appear instantly on the public <a href="{{ url_for('gallery') }}">Gallery</a> page.</p>
+    </div>
+
+    <form class="admin__upload card reveal mt-m" method="POST"
+          action="{{ url_for('admin_gallery_upload') }}" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <label class="admin__drop" for="galleryFiles">
+        {{ icon('arrow') }}
+        <b>Choose photos to upload</b>
+        <span class="muted">JPG, PNG, WEBP, GIF or AVIF · up to 8 MB each</span>
+        <input type="file" id="galleryFiles" name="photos" accept="image/*" multiple required
+               style="display:none">
+        <span class="admin__filenames muted" id="galleryFileNames"></span>
+      </label>
+      <button type="submit" class="btn btn--gold" style="justify-content:center">Upload {{ icon('arrow') }}</button>
+    </form>
+
+    {% if gallery %}
+    <div class="admin__gallery mt-m">
+      {% for ph in gallery %}
+      <figure class="admin__photo">
+        <img src="{{ ph.src }}" alt="{{ ph.alt }}" loading="lazy">
+        <figcaption>{{ ph.caption or ph.file }}</figcaption>
+        <form method="POST" action="{{ url_for('admin_gallery_delete') }}"
+              onsubmit="return confirm('Remove this photo from the gallery?');">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <input type="hidden" name="file" value="{{ ph.file }}">
+          <button type="submit" class="admin__del" aria-label="Delete photo">Remove</button>
+        </form>
+      </figure>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card reveal mt-m center">
+      <p class="muted">No photos yet. Upload your first installation photo above.</p>
+    </div>
+    {% endif %}
   </div>
 </section>
 {% endblock %}
+
+{% block head_extra %}
+<script nonce="{{ csp_nonce }}">
+  (function () {
+    var input = document.getElementById('galleryFiles');
+    var out = document.getElementById('galleryFileNames');
+    if (input && out) {
+      input.addEventListener('change', function () {
+        var n = input.files.length;
+        out.textContent = n ? (n + ' file' + (n > 1 ? 's' : '') + ' selected') : '';
+      });
+    }
+  })();
+</script>
+{% endblock %}
+

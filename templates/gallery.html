@@ -19,9 +19,11 @@
       {% for ph in photos %}
       <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}">
         <img src="{{ ph.src }}" alt="{{ ph.alt }}" loading="lazy">
+        {% if ph.caption %}
         <div class="tile__body">
-          <h3>{{ ph.alt }}</h3>
+          <h3>{{ ph.caption }}</h3>
         </div>
+        {% endif %}
       </div>
       {% endfor %}
     </div>
