@@ -29,7 +29,8 @@ PRODUCT_PHOTOS = {
     "round-capsule":    _img("1774801890542-c875dab300ea"),  # panoramic glass capsule
     "hospital":         _img("1764213077578-eab0ab29f949"),  # accessible lift, red doors
     "goods":            _img("1595392312388-38d093a975e3"),  # industrial goods hoist
-    "car-parking":      _img("1556537696-dc5627064044"),     # multi-level industrial shaft
+    "industrial":       _img("1556537696-dc5627064044"),     # industrial multi-level lift shaft
+    "car-parking":      _img("1470224114660-3f6686c562eb"),  # multi-level car parking garage
     "hydraulic":        _img("1709942772983-e8e9c04ad50b"),  # hydraulic machinery
 }
 
@@ -142,7 +143,7 @@ SHOWROOM_SCENES = [
 # ---------------------------------------------------------------------------
 STATS = [
     {"value": "20+", "label": "Cities Served Across India"},
-    {"value": "9", "label": "Elevator Product Lines"},
+    {"value": "10", "label": "Elevator Product Lines"},
     {"value": "10+", "label": "Countries in Global Network"},
     {"value": "ISO", "label": "9001:2008 Certified"},
 ]
@@ -293,6 +294,28 @@ PRODUCTS = [
             "Built to move materials, not people around them. Our goods elevators "
             "handle demanding industrial and commercial loads with reinforced "
             "structures and dependable drives for years of heavy use."
+        ),
+    },
+    {
+        "slug": "industrial",
+        "name": "Industrial Elevators / Platform Lifts",
+        "short": "Heavy-duty vertical transport engineered for factories, plants and warehouses.",
+        "capacity": "500 – 5000 kg",
+        "speed": "Up to 0.5 m/s",
+        "icon": "goods",
+        "tag": "Industrial",
+        "highlights": [
+            "Rugged loads from 500 kg up to 5 tonnes",
+            "Travel heights up to 100 m",
+            "1-tonne machine-room hoisting hook",
+            "Overload protection & robust safety interlocks",
+        ],
+        "description": (
+            "Purpose-built for industrial environments, Silex industrial lifts move "
+            "heavy materials, machinery and pallets safely between factory floors, "
+            "mezzanines and warehouse levels. Reinforced platforms, wide door "
+            "openings and dependable drives are engineered for continuous, "
+            "demanding duty cycles in plants, godowns and production units."
         ),
     },
     {
@@ -502,14 +525,12 @@ GLOBAL_NETWORK = [
 # Projects / gallery (illustrative dummy references)
 # ---------------------------------------------------------------------------
 PROJECTS = [
-    {"title": "Riverfront Residency", "city": "Surat", "type": "MRL Elevator", "photo": _img("1626628202501-0c11fde58ebf")},
-    {"title": "Elifenta Business Hub", "city": "Surat", "type": "Passenger Auto-Door", "photo": _img("1758518731135-6d9af1849b25")},
-    {"title": "Skyline Mall", "city": "Ahmedabad", "type": "Round Capsule", "photo": _img("1619155631589-89db583e0bcb")},
-    {"title": "City Care Hospital", "city": "Rajkot", "type": "Hospital Elevator", "photo": _img("1606388653150-62e3347056aa")},
-    {"title": "Metro Logistics Park", "city": "Mumbai", "type": "Goods Elevator", "photo": _img("1556537696-dc5627064044")},
-    {"title": "Grand Palace Hotel", "city": "Udaipur", "type": "Capsule Elevator", "photo": _img("1763898260685-1a5b10346ba9")},
-    {"title": "Green Valley Villas", "city": "Anand", "type": "Hydraulic Elevator", "photo": _img("1602339764055-2fa72b7d0475")},
-    {"title": "Central Parking Tower", "city": "Indore", "type": "Car Parking Elevator", "photo": _img("1595392312388-38d093a975e3")},
+    {"title": "Kumkum Society", "city": "Surat", "type": "MRL Elevator", "photo": _img("1525273177952-67455d25871f")},
+    {"title": "Shubham Bungalow", "city": "Surat", "type": "Home Elevator", "photo": _img("1774294925489-68f75e2b3b05")},
+    {"title": "Ramdev Bungalow", "city": "Surat", "type": "Hydraulic Elevator", "photo": _img("1735178181188-855a87e83dca")},
+    {"title": "Jolly Anklav", "city": "Surat", "type": "Passenger Auto-Door", "photo": _img("1758448721149-aa0ce8e1b2c9")},
+    {"title": "Aarav Showroom", "city": "Surat", "type": "Capsule Elevator", "photo": _img("1564771752795-1f9c48984c44")},
+    {"title": "Vedant Industry", "city": "Surat", "type": "Goods Elevator", "photo": _img("1595392312388-38d093a975e3")},
 ]
 
 # ---------------------------------------------------------------------------
@@ -1002,6 +1023,28 @@ SPECS = {
                 ["3000", "2000", "3000", "2900", "3400", "2700", "2900", "5900"],
             ],
             "note": _SPEC_NOTE,
+        },
+    },
+    "industrial": {
+        "summary": [
+            ["Segment", "Factories, plants, warehouses & godowns"],
+            ["Capacity", "500 – 5000 kg"],
+            ["Max. travel", "Up to 100 m (higher on request)"],
+            ["Rated speed", "0.25 – 0.5 m/s"],
+            ["Loading hook", "1-tonne machine-room hook"],
+            ["Safety", "Overload protection & robust interlocks"],
+        ],
+        "table": {
+            "headers": ["Load (kg)", "Car A", "Car B", "Shaft C", "Shaft D",
+                        "Entrance E", "Machine room K", "Machine room L"],
+            "rows": [
+                ["500", "1500", "1200", "1900", "1600", "1500", "2500", "4100"],
+                ["1000", "1500", "1800", "2300", "2000", "1800", "2500", "4700"],
+                ["1500", "1700", "2000", "2600", "2300", "2100", "2600", "4900"],
+                ["2000", "1700", "2500", "2600", "2900", "2400", "2600", "5400"],
+                ["3000", "2000", "3000", "2900", "3400", "2700", "2900", "5900"],
+            ],
+            "note": _SPEC_NOTE + " Higher load capacities available on request.",
         },
     },
     "car-parking": {

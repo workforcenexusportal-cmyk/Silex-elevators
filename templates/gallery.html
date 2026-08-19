@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% from "_icons.html" import icon %}
+{% block title %}Gallery{% endblock %}
+{% block meta_desc %}Photo gallery of Silex Elevator installations, cabins, finishes and completed projects across India.{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="container page-head__inner">
+    <div class="crumb"><a href="{{ url_for('home') }}">Home</a> / <span>Gallery</span></div>
+    <h1>Our work, in pictures.</h1>
+    <p>A closer look at Silex cabins, finishes and completed installations — real lifts, real buildings.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {% if photos %}
+    <div class="gallery">
+      {% for ph in photos %}
+      <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}">
+        <img src="{{ ph.src }}" alt="{{ ph.alt }}" loading="lazy">
+        <div class="tile__body">
+          <h3>{{ ph.alt }}</h3>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="gallery-empty">
+      <h3>Photos coming soon</h3>
+      <p>Add your images to <code>static/img/gallery</code> and they'll appear here automatically.</p>
+      <a href="{{ url_for('projects') }}" class="btn btn--gold btn--sm" style="margin-top:18px">View Projects {{ icon('arrow') }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include "_cta.html" %}
+{% endblock %}

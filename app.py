@@ -6,6 +6,7 @@ download. Designed to deploy cleanly on PythonAnywhere.
 """
 import csv
 import io
+import os
 import secrets
 from datetime import datetime
 from functools import wraps
@@ -112,6 +113,29 @@ def create_app():
     @app.route("/projects")
     def projects():
         return render_template("projects.html", projects=content.PROJECTS)
+
+    # -- Gallery (auto-lists any images dropped into static/img/gallery) ------
+    def _gallery_photos():
+        exts = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
+        folder = os.path.join(app.static_folder, "img", "gallery")
+        try:
+            names = sorted(os.listdir(folder))
+        except FileNotFoundError:
+            names = []
+        photos = []
+        for name in names:
+            if name.startswith("."):
+                continue
+            if os.path.splitext(name)[1].lower() in exts:
+                photos.append({
+                    "src": url_for("static", filename=f"img/gallery/{name}"),
+                    "alt": os.path.splitext(name)[0].replace("-", " ").replace("_", " ").title(),
+                })
+        return photos
+
+    @app.route("/gallery")
+    def gallery():
+        return render_template("gallery.html", photos=_gallery_photos())
 
     @app.route("/why-us")
     def why_us():

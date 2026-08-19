@@ -14,7 +14,7 @@ backed by SQLite. Designed to deploy on **PythonAnywhere**.
 - Fully responsive, animated single-brand site (navy + gold, elevator-motion motif)
 - Pages: Home, About, Products (+ per-product detail), Services, Projects, Why Us,
   Blog (+ post detail), Contact, custom 404
-- 9 elevator product lines sourced from the official brochure
+- 10 elevator product lines sourced from the official brochure
 - Working **Get a Quote / Contact** form that saves enquiries to SQLite
 - Floating WhatsApp button, sticky navbar, scroll-reveal animations
 - No external image dependencies — all visuals are CSS/SVG (fast + reliable)
