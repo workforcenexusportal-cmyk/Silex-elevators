@@ -235,7 +235,7 @@ body.nav-open .nav__toggle span:nth-child(3) { transform: translateY(-6px) rotat
 .nav__scrim.open { opacity: 1; visibility: visible; }
 
 /* Quick-links — transparent pill buttons floating just below the header */
-.quicklinks { position: absolute; top: clamp(86px, 8vw, 104px); left: 0; right: 0; z-index: 55; pointer-events: none; }
+.quicklinks { position: absolute; top: 124px; left: 0; right: 0; z-index: 55; pointer-events: none; }
 .quicklinks__inner { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
 .quicklink { pointer-events: auto; display: inline-flex; align-items: center; gap: 8px;
   padding: 11px 24px; border-radius: 999px; background: rgba(255,255,255,.07);
@@ -247,7 +247,7 @@ body.nav-open .nav__toggle span:nth-child(3) { transform: translateY(-6px) rotat
 .quicklink:hover { background: rgba(199,164,74,.2); border-color: var(--gold); transform: translateY(-1px); }
 .quicklink.is-active { border-color: var(--gold); color: var(--gold-lt); background: rgba(199,164,74,.16); }
 @media (max-width: 720px) {
-  .quicklinks { top: clamp(78px, 20vw, 92px); }
+  .quicklinks { top: clamp(94px, 22vw, 108px); }
   .quicklink { padding: 9px 18px; font-size: .84rem; }
 }
 
@@ -310,7 +310,7 @@ body.nav-open .nav__toggle span:nth-child(3) { transform: translateY(-6px) rotat
 /* =========================================================================
    HERO — full-bleed photo
    ========================================================================= */
-.hero { position: relative; min-height: 96vh; display: flex; align-items: center; color: #fff; overflow: hidden; padding: 150px 0 80px; }
+.hero { position: relative; min-height: 96vh; display: flex; align-items: center; color: #fff; overflow: hidden; padding: 196px 0 80px; }
 .hero__bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
 .hero__bg img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12);
   animation: heroZoom 2.4s cubic-bezier(.2,.7,.2,1) both; }

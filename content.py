@@ -36,7 +36,7 @@ PRODUCT_PHOTOS = {
 
 # Site-wide section imagery.
 MEDIA = {
-    "hero":          _img("1564771789713-8586b829cbeb", 2000),  # night glass lifts
+    "hero":          "/static/img/pexels-cottonbro-8453022.jpg.jpeg",  # Silex lift photography
     "about":         _img("1735178181188-855a87e83dca"),        # warm gold lift doors
     "cabin":         _img("1774294925489-68f75e2b3b05"),        # modern empty cabin
     "doors":         _img("1665285255745-f1d9453d109c"),        # ornate luxury doors

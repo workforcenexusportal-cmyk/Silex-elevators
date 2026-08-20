@@ -41,6 +41,7 @@ class Config:
     # Business contact details (from the official Silex brochure).
     COMPANY_NAME = "Silex Elevator PVT. LTD"
     COMPANY_TAGLINE = "Elevating spaces with precision and trust"
+    COMPANY_SLOGAN = "Your Trusted Partner to the Top"
     PHONE = "+91 85110 33826"
     PHONE_ALT = "+91 93166 64670"
     CONTACT_PERSON = "Yash Vasani"
@@ -60,7 +61,7 @@ class Config:
 
     # Admin dashboard credentials. Override with env vars in production.
     ADMIN_USER = os.environ.get("SILEX_ADMIN_USER", "rajvasani")
-    ADMIN_PASSWORD = os.environ.get("SILEX_ADMIN_PASSWORD", "Sx#9vK2r$Lm7!qZt")
+    ADMIN_PASSWORD = os.environ.get("SILEX_ADMIN_PASSWORD", "1212@#raJ")
 
     # Google Analytics 4 measurement ID, e.g. "G-XXXXXXXXXX" (optional).
     GA_MEASUREMENT_ID = os.environ.get("SILEX_GA_ID", "")
