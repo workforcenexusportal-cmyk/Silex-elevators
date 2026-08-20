@@ -29,6 +29,15 @@ from config import Config
 # a renamed non-image file can't be uploaded.
 GALLERY_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
 
+# Gallery categories — each maps to a sub-folder under static/img/gallery.
+GALLERY_CATEGORIES = [
+    ("cabin", "Cabin"),
+    ("control-operating-panel", "Control Operating Panel"),
+    ("landing-operating-panel", "Landing Operating Panel"),
+]
+GALLERY_CAT_SLUGS = {slug for slug, _ in GALLERY_CATEGORIES}
+GALLERY_CAT_LABELS = dict(GALLERY_CATEGORIES)
+
 
 def _is_allowed_image(filename, head):
     """Return True only if the extension is allowed AND the file's magic bytes
@@ -79,6 +88,7 @@ def create_app():
             "canonical_url": request.base_url,
             "social_links": content.SOCIAL_LINKS,
             "media": content.MEDIA,
+            "scenes": content.SHOWROOM_SCENES,
         }
 
     # -- Pages ---------------------------------------------------------------
@@ -95,7 +105,6 @@ def create_app():
             partners=content.PARTNERS,
             posts=content.BLOG_POSTS[:3],
             showroom=content.SHOWROOM,
-            scenes=content.SHOWROOM_SCENES,
         )
 
     @app.route("/about")
@@ -147,35 +156,50 @@ def create_app():
     # -- Gallery (auto-lists any images dropped into static/img/gallery) ------
     def _gallery_photos():
         exts = {".jpg", ".jpeg", ".png", ".webp", ".gif", ".avif"}
-        folder = os.path.join(app.static_folder, "img", "gallery")
-        try:
-            names = sorted(os.listdir(folder))
-        except FileNotFoundError:
-            names = []
+        base_folder = os.path.join(app.static_folder, "img", "gallery")
+        # Scan the root folder (legacy/uncategorised) plus each category sub-folder.
+        scan = [("", base_folder)] + [
+            (slug, os.path.join(base_folder, slug)) for slug, _ in GALLERY_CATEGORIES
+        ]
         photos = []
-        for name in names:
-            if name.startswith("."):
+        for cat_slug, folder in scan:
+            try:
+                names = sorted(os.listdir(folder))
+            except FileNotFoundError:
                 continue
-            if os.path.splitext(name)[1].lower() not in exts:
-                continue
-            # Strip any (possibly doubled) image extensions to derive a caption.
-            base = name
-            while os.path.splitext(base)[1].lower() in exts:
-                base = os.path.splitext(base)[0]
-            words = base.replace("-", " ").replace("_", " ").strip()
-            # Hash-style file names (random hex) get no caption.
-            caption = "" if re.fullmatch(r"[0-9a-fA-F]{12,}", base) else words.title()
-            photos.append({
-                "file": name,
-                "src": url_for("static", filename=f"img/gallery/{name}"),
-                "alt": caption or "Silex Elevator installation",
-                "caption": caption,
-            })
+            for name in names:
+                if name.startswith("."):
+                    continue
+                path = os.path.join(folder, name)
+                if not os.path.isfile(path):
+                    continue
+                if os.path.splitext(name)[1].lower() not in exts:
+                    continue
+                # Strip any (possibly doubled) image extensions to derive a caption.
+                base = name
+                while os.path.splitext(base)[1].lower() in exts:
+                    base = os.path.splitext(base)[0]
+                words = base.replace("-", " ").replace("_", " ").strip()
+                # Hash-style file names (random hex) get no caption.
+                caption = "" if re.fullmatch(r"[0-9a-fA-F]{12,}", base) else words.title()
+                rel = f"img/gallery/{cat_slug}/{name}" if cat_slug else f"img/gallery/{name}"
+                photos.append({
+                    "file": name,
+                    "category": cat_slug,
+                    "category_label": GALLERY_CAT_LABELS.get(cat_slug, ""),
+                    "src": url_for("static", filename=rel),
+                    "alt": caption or "Silex Elevator installation",
+                    "caption": caption,
+                })
         return photos
 
     @app.route("/gallery")
     def gallery():
-        return render_template("gallery.html", photos=_gallery_photos())
+        return render_template(
+            "gallery.html",
+            photos=_gallery_photos(),
+            categories=GALLERY_CATEGORIES,
+        )
 
     # -- AI site assistant (grounded in site content, no external API) --------
     @app.route("/api/chat", methods=["POST"])
@@ -450,6 +474,7 @@ def create_app():
             total=len(enquiries),
             applications=applications,
             gallery=_gallery_photos(),
+            categories=GALLERY_CATEGORIES,
         )
 
     @app.route("/admin/export.csv")
@@ -482,7 +507,11 @@ def create_app():
         if not csrf_ok():
             flash("Your session expired. Please try again.", "error")
             return redirect(url_for("admin") + "#gallery")
-        folder = os.path.join(app.static_folder, "img", "gallery")
+        category = (request.form.get("category") or "").strip()
+        if category not in GALLERY_CAT_SLUGS:
+            flash("Please choose a category for the photos.", "error")
+            return redirect(url_for("admin") + "#gallery")
+        folder = os.path.join(app.static_folder, "img", "gallery", category)
         os.makedirs(folder, exist_ok=True)
         saved, skipped = 0, 0
         for f in request.files.getlist("photos"):
@@ -506,7 +535,7 @@ def create_app():
             f.save(dest)
             saved += 1
         if saved:
-            flash(f"Uploaded {saved} photo(s) to the gallery.", "success")
+            flash(f"Uploaded {saved} photo(s) to {GALLERY_CAT_LABELS[category]}.", "success")
         if skipped:
             flash(f"Skipped {skipped} file(s) — only real image files are allowed.", "error")
         if not saved and not skipped:
@@ -519,11 +548,14 @@ def create_app():
         if not csrf_ok():
             flash("Your session expired. Please try again.", "error")
             return redirect(url_for("admin") + "#gallery")
-        folder = os.path.abspath(os.path.join(app.static_folder, "img", "gallery"))
+        base_folder = os.path.abspath(os.path.join(app.static_folder, "img", "gallery"))
+        category = os.path.basename((request.form.get("category") or "").strip())
+        folder = (os.path.join(base_folder, category)
+                  if category in GALLERY_CAT_SLUGS else base_folder)
         safe = os.path.basename((request.form.get("file") or "").strip())
         target = os.path.abspath(os.path.join(folder, safe))
-        # Path-traversal safe: the resolved target must sit inside the folder.
-        if (safe and target.startswith(folder + os.sep)
+        # Path-traversal safe: the resolved target must sit inside the gallery tree.
+        if (safe and target.startswith(base_folder + os.sep)
                 and os.path.isfile(target)
                 and os.path.splitext(safe)[1].lower() in GALLERY_EXTS):
             try:

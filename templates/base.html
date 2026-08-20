@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=39">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=44">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 2l19 11v22L24 46 5 35V13z' fill='%230a1738'/><path d='M31 17c-2-2-5-3-8-2.6-3 .4-4.6 2.4-4.4 4.6.2 2.2 2 3.2 5.4 4 3.4.8 4.2 1.6 4.3 2.7.1 1.3-1.3 2.4-3.6 2.5-2.4.1-4.2-.8-5.7-2.3' fill='none' stroke='%23c3ccdb' stroke-width='3.4' stroke-linecap='round'/></svg>">
 
   <!-- Structured data -->
@@ -145,7 +145,6 @@
           </div>
         </div>
 
-        <a href="{{ url_for('gallery') }}" class="{{ 'active' if request.endpoint == 'gallery' }}">Gallery</a>
         <a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' }}">Contact</a>
         {% if session.admin %}
         <a href="{{ url_for('admin') }}" class="nav__admin {{ 'active' if request.endpoint == 'admin' }}">{{ icon('safety') }} Dashboard</a>
@@ -163,6 +162,13 @@
     </div>
   </header>
   <div class="nav__scrim" id="navScrim"></div>
+
+  <div class="quicklinks">
+    <div class="container quicklinks__inner">
+      <a href="{{ url_for('gallery') }}" class="quicklink {{ 'is-active' if request.endpoint == 'gallery' }}">{{ icon('search') }} Gallery</a>
+      <button type="button" class="quicklink" data-vsr-open aria-label="Open the virtual showroom">{{ icon('arrow') }} Virtual Showroom</button>
+    </div>
+  </div>
 
   <main id="top">
     {% block content %}{% endblock %}
@@ -219,7 +225,9 @@
       </div>
       <div class="footer__branches">
         <span class="footer__branches-label">{{ icon('pin') }} Also serving from</span>
-        <span>Surat</span><span>Vadodara</span><span>Bhavnagar</span>
+        <div class="footer__branches-list">
+          <span>Surat</span><span>Vadodara</span><span>Bhavnagar</span><span>Panoli</span><span>Navapur</span>
+        </div>
       </div>
       <div class="footer__bottom">
         <span>© {{ current_year }} {{ cfg.COMPANY_NAME }}. All rights reserved.</span>
@@ -271,6 +279,63 @@
       <button type="button" class="btn btn--line btn--sm" id="cookieDecline">Decline</button>
       <button type="button" class="btn btn--gold btn--sm" id="cookieAccept">Accept</button>
     </div>
+  </div>
+
+  <!-- VIRTUAL SHOWROOM · 360° GALLERY ROOM (modal — opens from the quick-link button) -->
+  <div class="vsr-modal" data-vsr-modal hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Virtual showroom gallery">
+    <div class="vsr-modal__backdrop" data-vsr-close></div>
+    <div class="vsr-modal__inner">
+      <button type="button" class="vsr-modal__close" data-vsr-close aria-label="Close showroom">{{ icon('x') }}</button>
+
+      <div class="vsr-stage" data-vsr-stage>
+        <div class="vsr-ring" data-vsr-ring>
+          {% for scene in scenes %}
+          <figure class="vsr-cell" style="--i:{{ loop.index0 }}"
+                  data-place="{{ scene.place }}" data-lift="{{ scene.lift }}" data-note="{{ scene.note }}"
+                  data-photo="{{ scene.photo }}">
+            <img src="{{ scene.photo }}" alt="{{ scene.lift }} in a {{ scene.place }}" loading="lazy">
+            <figcaption>
+              <span class="vsr-cell__place">{{ scene.place }}</span>
+              <span class="vsr-cell__enter">{{ icon('search') }} Open 360°</span>
+            </figcaption>
+          </figure>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button type="button" class="vsr-nav vsr-nav--prev" data-vsr-prev aria-label="Previous room">{{ icon('arrow') }}</button>
+      <button type="button" class="vsr-nav vsr-nav--next" data-vsr-next aria-label="Next room">{{ icon('arrow') }}</button>
+
+      <div class="vsr-caption" data-vsr-caption>
+        <span class="eyebrow" data-vsr-place></span>
+        <h3 data-vsr-lift></h3>
+        <p data-vsr-note></p>
+        <div class="vsr-caption__actions">
+          <button type="button" class="btn btn--gold" data-vsr-360>Open 360° View {{ icon('search') }}</button>
+          <a href="{{ url_for('products') }}" class="btn btn--line">See this lift {{ icon('arrow') }}</a>
+          <span class="vsr-counter"><b data-vsr-index>1</b> / {{ scenes|length }}</span>
+        </div>
+      </div>
+
+      <div class="vsr-dots" data-vsr-dots></div>
+    </div>
+  </div>
+
+  <!-- 360° PANORAMA VIEWER (drag to look around, like Street View) -->
+  <div class="pano" data-pano hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="360 degree view">
+    <div class="pano__stage" data-pano-stage>
+      <img class="pano__img" data-pano-img alt="" draggable="false">
+    </div>
+    <div class="pano__grabhint" data-pano-grabhint>
+      <span class="pano__grabhint-inner">{{ icon('search') }} Drag to look around · scroll to zoom</span>
+    </div>
+    <div class="pano__bar">
+      <span class="pano__badge">360°</span>
+      <span class="pano__place" data-pano-place></span>
+    </div>
+    <button type="button" class="pano__zoom pano__zoom--in" data-pano-zoomin aria-label="Zoom in">+</button>
+    <button type="button" class="pano__zoom pano__zoom--out" data-pano-zoomout aria-label="Zoom out">−</button>
+    <button type="button" class="pano__close" data-pano-close aria-label="Close 360 view">{{ icon('x') }}</button>
   </div>
 
   <script src="{{ url_for('static', filename='js/main.js') }}?v=30" nonce="{{ csp_nonce }}" defer></script>

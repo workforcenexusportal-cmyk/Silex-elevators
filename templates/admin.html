@@ -130,6 +130,13 @@
     <form class="admin__upload card reveal mt-m" method="POST"
           action="{{ url_for('admin_gallery_upload') }}" enctype="multipart/form-data">
       <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <div class="field" style="margin-bottom:16px">
+        <label for="galleryCategory">Category</label>
+        <select id="galleryCategory" name="category" required>
+          <option value="">Select a category…</option>
+          {% for slug, label in categories %}<option value="{{ slug }}">{{ label }}</option>{% endfor %}
+        </select>
+      </div>
       <label class="admin__drop" for="galleryFiles">
         {{ icon('arrow') }}
         <b>Choose photos to upload</b>
@@ -146,11 +153,12 @@
       {% for ph in gallery %}
       <figure class="admin__photo">
         <img src="{{ ph.src }}" alt="{{ ph.alt }}" loading="lazy">
-        <figcaption>{{ ph.caption or ph.file }}</figcaption>
+        <figcaption>{% if ph.category_label %}<b style="color:var(--gold-dk)">{{ ph.category_label }}</b> · {% endif %}{{ ph.caption or ph.file }}</figcaption>
         <form method="POST" action="{{ url_for('admin_gallery_delete') }}"
               onsubmit="return confirm('Remove this photo from the gallery?');">
           <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
           <input type="hidden" name="file" value="{{ ph.file }}">
+          <input type="hidden" name="category" value="{{ ph.category }}">
           <button type="submit" class="admin__del" aria-label="Delete photo">Remove</button>
         </form>
       </figure>

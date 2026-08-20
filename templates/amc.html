@@ -59,7 +59,9 @@
       <div class="plan reveal {{ 'plan--featured' if p.featured }}" data-delay="{{ loop.index }}">
         {% if p.featured %}<span class="plan__flag">Most Popular</span>{% endif %}
         <h3>{{ p.name }}</h3>
+        {% if p.tagline %}<div class="plan__tag">{{ p.tagline }}</div>{% endif %}
         <div class="plan__price">{{ p.price }}</div>
+        {% if p.gst %}<div class="plan__gst">{{ p.gst }}</div>{% endif %}
         <p class="plan__best">Best for {{ p.best }}</p>
         <ul class="plan__list">
           {% for f in p.features %}

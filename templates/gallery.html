@@ -15,17 +15,28 @@
 <section class="section">
   <div class="container">
     {% if photos %}
-    <div class="gallery">
+    <div class="gallery-filters" role="tablist" aria-label="Gallery categories">
+      <button type="button" class="gfilter is-active" data-filter="all">All</button>
+      {% for slug, label in categories %}
+      <button type="button" class="gfilter" data-filter="{{ slug }}">{{ label }}</button>
+      {% endfor %}
+    </div>
+    <div class="gallery" id="galleryGrid">
       {% for ph in photos %}
-      <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}">
+      <div class="tile reveal" data-delay="{{ loop.index0 % 4 + 1 }}" data-cat="{{ ph.category }}">
         <img src="{{ ph.src }}" alt="{{ ph.alt }}" loading="lazy">
-        {% if ph.caption %}
+        {% if ph.caption or ph.category_label %}
         <div class="tile__body">
-          <h3>{{ ph.caption }}</h3>
+          {% if ph.category_label %}<span class="tile__tag">{{ ph.category_label }}</span>{% endif %}
+          {% if ph.caption %}<h3>{{ ph.caption }}</h3>{% endif %}
         </div>
         {% endif %}
       </div>
       {% endfor %}
+    </div>
+    <div class="gallery-empty" id="galleryNone" hidden>
+      <h3>No photos in this category yet</h3>
+      <p>Check back soon — we add new installation photos regularly.</p>
     </div>
     {% else %}
     <div class="gallery-empty">
@@ -38,4 +49,28 @@
 </section>
 
 {% include "_cta.html" %}
+{% endblock %}
+
+{% block head_extra %}
+<script nonce="{{ csp_nonce }}">
+  document.addEventListener('DOMContentLoaded', function () {
+    var filters = document.querySelectorAll('.gfilter');
+    var tiles = document.querySelectorAll('#galleryGrid .tile');
+    var none = document.getElementById('galleryNone');
+    if (!filters.length) return;
+    filters.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var cat = btn.getAttribute('data-filter');
+        filters.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+        var shown = 0;
+        tiles.forEach(function (t) {
+          var match = (cat === 'all') || (t.getAttribute('data-cat') === cat);
+          t.style.display = match ? '' : 'none';
+          if (match) shown++;
+        });
+        if (none) none.hidden = shown !== 0;
+      });
+    });
+  });
+</script>
 {% endblock %}

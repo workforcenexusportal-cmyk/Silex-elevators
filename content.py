@@ -754,7 +754,9 @@ SEGMENTS = [
 AMC_PLANS = [
     {
         "name": "Essential",
-        "price": "Basic Cover",
+        "tagline": "Basic Cover",
+        "price": "₹8,500",
+        "gst": "+ 18% GST · per year",
         "best": "Homes & small buildings",
         "featured": False,
         "features": [
@@ -766,7 +768,9 @@ AMC_PLANS = [
     },
     {
         "name": "Comprehensive",
-        "price": "Most Popular",
+        "tagline": "Most Popular",
+        "price": "₹12,000",
+        "gst": "+ 18% GST · per year",
         "best": "Apartments & offices",
         "featured": True,
         "features": [
@@ -779,7 +783,9 @@ AMC_PLANS = [
     },
     {
         "name": "Premium Care",
-        "price": "Total Peace of Mind",
+        "tagline": "Total Peace of Mind",
+        "price": "₹26,500",
+        "gst": "+ 18% GST · per year",
         "best": "Hospitals, malls & hotels",
         "featured": False,
         "features": [
