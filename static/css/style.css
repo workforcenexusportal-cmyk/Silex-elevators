@@ -177,7 +177,7 @@ h1,h2,h3,h4 { font-family: var(--display); line-height: 1.12; font-weight: 700; 
 
 .brand { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; min-width: 0; margin-right: auto; }
 .brand img { display: block; max-width: 100%; }
-.brand__logo { height: 58px; width: auto; max-width: 210px; object-fit: contain; object-position: left center;
+.brand__logo { height: 58px; width: auto; max-width: 210px; flex: 0 0 auto; object-fit: contain; object-position: left center;
   filter: drop-shadow(0 4px 12px rgba(0,0,0,.5)); }
 .brand__wordmark { display: flex; flex-direction: column; line-height: 1.05; }
 .brand__name { font-family: var(--display); font-weight: 800; font-size: clamp(.86rem, 1vw + .26rem, 1.16rem);
@@ -797,7 +797,7 @@ body.nav-open .nav__toggle span:nth-child(3) { transform: translateY(-6px) rotat
 .cta { position: relative; overflow: hidden; background: linear-gradient(120deg, var(--navy-2), var(--ink)); color: #fff;
   border-block: 1px solid var(--line); }
 .cta__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 26px;
-  padding: clamp(44px,6vw,72px) 0; position: relative; z-index: 1; }
+  padding-block: clamp(44px,6vw,72px); position: relative; z-index: 1; }
 .cta h2 { color: #fff; font-size: clamp(1.7rem,3.4vw,2.6rem); max-width: 20ch; }
 .cta__glow { position: absolute; inset: -40% -10% auto auto; width: 60%; height: 160%;
   background: radial-gradient(closest-side, rgba(190,201,224,.28), transparent); }
@@ -1266,4 +1266,36 @@ body.chat-open .chat-fab__close { opacity: 1; transform: none; }
 @media (max-width: 620px) {
   .admin__stats { grid-template-columns: 1fr; }
 }
+
+/* =========================================================================
+   IMAGE LIGHTBOX  ·  tap any photo to view it full-size (no download)
+   ========================================================================= */
+img.zoomable, .zoomable { cursor: zoom-in; }
+.imgview {
+  position: fixed; inset: 0; z-index: 100000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 3vmin; box-sizing: border-box;
+  background: rgba(3, 8, 20, .93);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+.imgview.is-open { opacity: 1; visibility: visible; }
+.imgview__img {
+  max-width: 96vw; max-height: 94vh; width: auto; height: auto;
+  object-fit: contain; border-radius: 10px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .6);
+  transform: scale(.94); transition: transform .3s ease;
+  -webkit-touch-callout: none; user-select: none; -webkit-user-select: none;
+  pointer-events: none;
+}
+.imgview.is-open .imgview__img { transform: scale(1); }
+.imgview__close {
+  position: absolute; top: 14px; right: 16px; width: 46px; height: 46px;
+  border-radius: 50%; border: 1px solid rgba(255, 255, 255, .28);
+  background: rgba(0, 0, 0, .42); color: #fff; font-size: 24px; line-height: 1;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+.imgview__close:hover { background: rgba(0, 0, 0, .7); transform: scale(1.06); }
 

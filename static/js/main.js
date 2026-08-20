@@ -730,5 +730,85 @@
       if (e.key === "Escape" && panel.classList.contains("is-open")) closeChat();
     });
   })();
+
+  /* ---- Image lightbox · tap any photo to view it full-size -------------- */
+  (function () {
+    // Chrome/UI images we never want to open in the viewer.
+    var EXCLUDE = ".nav, .brand, .silex-splash, [data-lift-intro], .lift-intro," +
+      " .chatbot, #chatFab, .chat-fab, .footer__brand, [data-vsr-modal]," +
+      " [data-vsr-open], [data-carousel], [data-panels], .imgview, .hero__bg, .hero";
+
+    function isPhoto(img) {
+      if (!img || img.tagName !== "IMG") return false;
+      if (img.closest(EXCLUDE)) return false;
+      if (img.closest("a")) return false;            // keep linked images as links
+      if (img.classList.contains("imgview__img")) return false;
+      return true;
+    }
+
+    var overlay = null, viewImg = null;
+
+    function build() {
+      overlay = doc.createElement("div");
+      overlay.className = "imgview";
+      overlay.setAttribute("role", "dialog");
+      overlay.setAttribute("aria-modal", "true");
+      overlay.setAttribute("aria-hidden", "true");
+      viewImg = doc.createElement("img");
+      viewImg.className = "imgview__img";
+      viewImg.alt = "";
+      var close = doc.createElement("button");
+      close.type = "button";
+      close.className = "imgview__close";
+      close.setAttribute("aria-label", "Close");
+      close.innerHTML = "&times;";
+      overlay.appendChild(viewImg);
+      overlay.appendChild(close);
+      doc.body.appendChild(overlay);
+      overlay.addEventListener("click", closeView);
+      close.addEventListener("click", closeView);
+      // block the long-press "save image" menu inside the viewer
+      overlay.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    }
+
+    function openView(src, alt) {
+      if (!overlay) build();
+      viewImg.src = src;
+      viewImg.alt = alt || "";
+      void overlay.offsetWidth;
+      overlay.classList.add("is-open");
+      overlay.setAttribute("aria-hidden", "false");
+      doc.body.style.overflow = "hidden";
+    }
+    function closeView() {
+      if (!overlay) return;
+      overlay.classList.remove("is-open");
+      overlay.setAttribute("aria-hidden", "true");
+      doc.body.style.overflow = "";
+    }
+
+    doc.addEventListener("click", function (e) {
+      var img = e.target.closest ? e.target.closest("img") : null;
+      if (!img) {
+        // photo may sit under a tile / figure overlay that swallows the click
+        var host = e.target.closest && e.target.closest(".tile, figure, picture, .pcard__media");
+        if (host && !host.closest("a")) img = host.querySelector("img");
+      }
+      if (!img || !isPhoto(img)) return;
+      e.preventDefault();
+      openView(img.currentSrc || img.src, img.alt);
+    });
+    doc.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && overlay && overlay.classList.contains("is-open")) closeView();
+    });
+
+    // Flag qualifying photos so they show a zoom-in cursor.
+    doc.querySelectorAll("img").forEach(function (img) {
+      if (!isPhoto(img)) return;
+      img.classList.add("zoomable");
+      var host = img.closest(".tile, figure, picture, .pcard__media");
+      if (host && !host.closest("a")) host.classList.add("zoomable");
+    });
+  })();
 })();
 
