@@ -28,6 +28,18 @@
       {'name': 'GreenStar BELT', 'img': 'greenstar-belt.png', 'cap': '6–20 passengers', 'spd': '1.0 m/s'}
     ] %}
 
+    {% set sharp_machines = [
+      {'name': 'STARK', 'img': 'stark.png', 'cap': '2200 kg static load', 'spd': 'Gear ratio 1/37'},
+      {'name': 'Stellar 125', 'img': 'stellar-125.png', 'cap': '3000 kg static load', 'spd': 'Gear ratio 1/41'},
+      {'name': 'Totus', 'img': 'totus.png', 'cap': '3200 kg static load', 'spd': 'Gear ratio 1/45'},
+      {'name': 'Lider', 'img': 'lider.png', 'cap': '3800 kg static load', 'spd': 'Gear ratio 1/49–1/59'},
+      {'name': 'Zorro', 'img': 'zorro.png', 'cap': '4200 kg static load', 'spd': 'Gear ratio 1/46'},
+      {'name': 'Tusker', 'img': 'tusker.png', 'cap': '7000 kg static load', 'spd': 'Gear ratio 1/46'},
+      {'name': 'Cauldron-250', 'img': 'cauldron-250.png', 'cap': '8200 kg static load', 'spd': 'Gear ratio 1/58'},
+      {'name': 'Dumbwaiter HEN-06 · Pulley', 'img': 'dumbwaiter-pulley.png', 'cap': '700 kg static load', 'spd': 'Gear ratio 1/49'},
+      {'name': 'Dumbwaiter HEN-06 · Drum', 'img': 'dumbwaiter-drum.png', 'cap': '700 kg static load', 'spd': 'Gear ratio 1/49'}
+    ] %}
+
     <!-- Bharat Bijlee -->
     <div class="machine-brand reveal">
       <div class="machine-brand__head">
@@ -55,18 +67,30 @@
       </div>
     </div>
 
-    <!-- Sharp (line-up coming soon) -->
+    <!-- Sharp -->
     <div class="machine-brand reveal">
       <div class="machine-brand__head">
         <div>
           <h3 class="machine-brand__name">Sharp</h3>
-          <span class="machine-brand__tag">Traction Machines</span>
+          <span class="machine-brand__tag">Geared Traction Machine Series</span>
         </div>
-        <span class="machine-brand__count machine-brand__count--soon">Coming soon</span>
+        <span class="machine-brand__count">9 Machines</span>
       </div>
-      <div class="machine-empty">
-        <span class="machine-empty__icon">{{ icon('cpu') }}</span>
-        <p>Sharp machine line-up will be added here soon.</p>
+      <div class="machine-grid">
+        {% for m in sharp_machines %}
+        <article class="machine-card">
+          <div class="machine-card__media">
+            <img src="{{ url_for('static', filename='img/machines/sharp/' ~ m.img) }}" alt="Sharp {{ m.name }} geared traction machine" loading="lazy">
+          </div>
+          <div class="machine-card__body">
+            <h4>{{ m.name }}</h4>
+            <div class="machine-card__meta">
+              <span>{{ icon('passenger') }}{{ m.cap }}</span>
+              <span>{{ icon('gauge') }}{{ m.spd }}</span>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
       </div>
     </div>
   </div>

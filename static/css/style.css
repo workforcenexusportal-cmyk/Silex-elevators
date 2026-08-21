@@ -1831,9 +1831,37 @@ body.theme-lux.page-machines {
   --veil-a: rgba(170,199,213,.5); --veil-c: rgba(170,199,213,.5);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
+  /* -- Mobile smoothness pass ------------------------------------------------
+     On phones the fixed, blurred photo backdrop re-composites every frame and
+     visibly JUMPS when the browser address bar shows/hides — that reads as
+     "glitching". backdrop-filter blur on the fixed nav/cards is also very
+     expensive on mobile GPUs. So on small screens we drop the fixed layers and
+     heavy blurs, and paint the veil as a cheap, natural-scrolling page
+     background instead. Looks nearly identical; scrolls butter-smooth. */
+  body.theme-lux::before { display: none !important; }
+  body.theme-lux::after  { display: none !important; }
+  body.theme-lux {
+    background:
+      radial-gradient(70% 45% at 12% 4%,  var(--veil-a), transparent 62%),
+      radial-gradient(70% 45% at 88% 96%, var(--veil-c), transparent 62%),
+      var(--veil-base);
+    background-attachment: scroll;
+  }
+  /* Kill backdrop-filter everywhere on mobile — replace fixed nav blur with a
+     solid frosted-white bar so it never re-samples the page behind it. */
+  .nav {
+    background: rgba(247,250,253,.96) !important;
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  }
+  .card, .plan, .job, .result, .pcard, .info-list, .specgrid,
+  .badge, .chip, .tag, .pcard__tag, .btn--navy, .btn--ghost, .btn--line,
+  .drawer, .has-drop__menu, .machine-card, .eyebrow,
+  .lux-contact__panel, .panels__btn, .carousel__btn {
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  }
+  /* Page-head hero image scrolls with content (no fixed-jump) */
   .theme-lux .page-head { background-attachment: scroll; }
-  body.theme-lux::before { background-attachment: scroll; }
 }
 
 /* =========================================================================
