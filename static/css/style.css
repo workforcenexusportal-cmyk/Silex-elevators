@@ -1102,6 +1102,8 @@ body.nav-open .nav__toggle span:nth-child(3) { transform: translateY(-6px) rotat
   .pcard__body, .tile__body { padding: 20px; }
   .stats { grid-template-columns: 1fr; }
   .stat { padding: 24px 18px; }
+  /* Give the stats band breathing room from the hero on phones */
+  .hero-stats { margin-top: 28px !important; }
   .job__head { flex-direction: column; }
   .footer__bottom { text-align: center; justify-content: center; }
   .footer__legal { flex-wrap: wrap; justify-content: center; }
