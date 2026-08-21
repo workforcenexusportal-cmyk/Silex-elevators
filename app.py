@@ -123,6 +123,10 @@ def create_app():
     def products():
         return render_template("products.html", products=content.PRODUCTS)
 
+    @app.route("/machines")
+    def machines():
+        return render_template("machines.html")
+
     @app.route("/products/<slug>")
     def product_detail(slug):
         product = next((p for p in content.PRODUCTS if p["slug"] == slug), None)

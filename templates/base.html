@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=60">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=66">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 2l19 11v22L24 46 5 35V13z' fill='%230a1738'/><path d='M31 17c-2-2-5-3-8-2.6-3 .4-4.6 2.4-4.4 4.6.2 2.2 2 3.2 5.4 4 3.4.8 4.2 1.6 4.3 2.7.1 1.3-1.3 2.4-3.6 2.5-2.4.1-4.2-.8-5.7-2.3' fill='none' stroke='%23c3ccdb' stroke-width='3.4' stroke-linecap='round'/></svg>">
 
   <!-- Structured data -->
@@ -66,23 +66,32 @@
   {% block head_extra %}{% endblock %}
 </head>
 <body class="{% block body_class %}theme-lux page-{{ request.endpoint }}{% endblock %}">
-  <!-- ===== Logo splash · shows the brand mark on load, then fades to reveal the site ===== -->
-  <div id="silex-splash" role="status" aria-label="Loading {{ cfg.COMPANY_NAME }}">
+  {% set is_home = request.endpoint == 'home' %}
+  <!-- ===== Logo splash · full "Welcome to" sequence on home; logo-only elsewhere ===== -->
+  <div id="silex-splash" class="{{ 'silex-splash--welcome' if is_home else 'silex-splash--logo' }}" role="status" aria-label="Loading {{ cfg.COMPANY_NAME }}">
     <div class="silex-splash__mark">
+      {% if is_home %}<span class="silex-splash__welcome">Welcome to</span>{% endif %}
       <img class="silex-splash__logo" src="{{ url_for('static', filename='img/silex-emblem.png') }}?v=1" alt="{{ cfg.COMPANY_NAME }}">
+      {% if is_home %}<span class="silex-splash__name">Silex Elevators PVT. LTD</span>{% endif %}
       <span class="silex-splash__bar"><span></span></span>
     </div>
   </div>
   <script nonce="{{ csp_nonce }}">
     (function () {
+      var START = Date.now();
+      var MIN_SHOW = {{ 3100 if is_home else 1100 }}; // full welcome sequence on home, quick logo elsewhere
       function hideSplash() {
         var s = document.getElementById('silex-splash');
         if (!s) return;
         s.classList.add('is-hide');
         setTimeout(function () { if (s && s.parentNode) s.parentNode.removeChild(s); }, 600);
       }
-      window.addEventListener('load', function () { setTimeout(hideSplash, 650); });
-      setTimeout(hideSplash, 4500); // safety: never block the UI
+      function scheduleHide() {
+        var wait = Math.max(0, MIN_SHOW - (Date.now() - START));
+        setTimeout(hideSplash, wait);
+      }
+      window.addEventListener('load', scheduleHide);
+      setTimeout(hideSplash, 6000); // safety: never block the UI
     })();
   </script>
 
@@ -110,7 +119,7 @@
           </div>
         </div>
 
-        <a href="{{ url_for('home') }}#machines">Machines</a>
+        <a href="{{ url_for('machines') }}" class="{{ 'active' if request.endpoint == 'machines' }}">Machines</a>
 
         <div class="has-drop">
           <button type="button" class="drop-toggle {{ 'active' if request.endpoint in ['solutions','solution_detail'] }}">Solutions {{ icon('arrow') }}</button>
@@ -192,12 +201,12 @@
             {% endfor %}
           </div>
         </div>
-        <div>
+        <div class="footer__col--explore">
           <h4>Explore</h4>
           <ul class="footer__links">
             <li><a href="{{ url_for('about') }}">About Us</a></li>
             <li><a href="{{ url_for('products') }}">Products</a></li>
-            <li><a href="{{ url_for('home') }}#machines">Machines</a></li>
+            <li><a href="{{ url_for('machines') }}">Machines</a></li>
             <li><a href="{{ url_for('solutions') }}">Solutions</a></li>
             <li><a href="{{ url_for('projects') }}">Projects</a></li>
             <li><a href="{{ url_for('gallery') }}">Gallery</a></li>
@@ -205,7 +214,7 @@
             <li><a href="{{ url_for('blog') }}">Blog</a></li>
           </ul>
         </div>
-        <div>
+        <div class="footer__col--services">
           <h4>Services</h4>
           <ul class="footer__links">
             <li><a href="{{ url_for('services') }}">Installation</a></li>
@@ -216,7 +225,7 @@
             <li><a href="{{ url_for('faq') }}">FAQ</a></li>
           </ul>
         </div>
-        <div>
+        <div class="footer__col--contact">
           <h4>Get in Touch</h4>
           <ul class="footer__contact">
             <li>{{ icon('pin') }}<span>{{ cfg.ADDRESS }}</span></li>
