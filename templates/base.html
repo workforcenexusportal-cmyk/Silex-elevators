@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=69">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=72">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 2l19 11v22L24 46 5 35V13z' fill='%230a1738'/><path d='M31 17c-2-2-5-3-8-2.6-3 .4-4.6 2.4-4.4 4.6.2 2.2 2 3.2 5.4 4 3.4.8 4.2 1.6 4.3 2.7.1 1.3-1.3 2.4-3.6 2.5-2.4.1-4.2-.8-5.7-2.3' fill='none' stroke='%23c3ccdb' stroke-width='3.4' stroke-linecap='round'/></svg>">
 
   <!-- Structured data -->
@@ -68,7 +68,7 @@
 <body class="{% block body_class %}theme-lux page-{{ request.endpoint }}{% endblock %}">
   {% set is_home = request.endpoint == 'home' %}
   <!-- ===== Logo splash · full "Welcome to" sequence on home; logo-only elsewhere ===== -->
-  <div id="silex-splash" class="{{ 'silex-splash--welcome' if is_home else 'silex-splash--logo' }}" role="status" aria-label="Loading {{ cfg.COMPANY_NAME }}">
+  <div id="silex-splash" class="{{ 'silex-splash--welcome' if is_home else 'silex-splash--logo' }}" role="status" aria-label="Loading {{ cfg.COMPANY_NAME }}" data-min-show="{{ 3100 if is_home else 1100 }}">
     <div class="silex-splash__mark">
       {% if is_home %}<span class="silex-splash__welcome">Welcome to</span>{% endif %}
       <img class="silex-splash__logo" src="{{ url_for('static', filename='img/silex-emblem.png') }}?v=1" alt="{{ cfg.COMPANY_NAME }}">
@@ -79,7 +79,9 @@
   <script nonce="{{ csp_nonce }}">
     (function () {
       var START = Date.now();
-      var MIN_SHOW = {{ 3100 if is_home else 1100 }}; // full welcome sequence on home, quick logo elsewhere
+      var splashEl = document.getElementById('silex-splash');
+      // full welcome sequence on home, quick logo elsewhere (value set server-side)
+      var MIN_SHOW = parseInt(splashEl && splashEl.getAttribute('data-min-show'), 10) || 1100;
       function hideSplash() {
         var s = document.getElementById('silex-splash');
         if (!s) return;
@@ -302,7 +304,7 @@
       <div class="vsr-stage" data-vsr-stage>
         <div class="vsr-ring" data-vsr-ring>
           {% for scene in scenes %}
-          <figure class="vsr-cell" style="--i:{{ loop.index0 }}"
+          <figure class="vsr-cell"
                   data-place="{{ scene.place }}" data-lift="{{ scene.lift }}" data-note="{{ scene.note }}"
                   data-photo="{{ scene.photo }}">
             <img src="{{ scene.photo }}" alt="{{ scene.lift }} in a {{ scene.place }}" loading="lazy">

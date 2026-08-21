@@ -5,11 +5,12 @@ an admin dashboard, email notifications, SEO endpoints and a brochure
 download. Designed to deploy cleanly on PythonAnywhere.
 """
 import csv
+import hashlib
 import io
 import os
 import re
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 
 from flask import (
@@ -76,6 +77,39 @@ def create_app():
     def csrf_ok():
         sent = request.form.get("_csrf", "")
         return bool(sent) and secrets.compare_digest(sent, session.get("_csrf", ""))
+
+    # -- Visitor analytics · log real page views (privacy-friendly) ----------
+    _BOT_UA = re.compile(
+        r"bot|spider|crawl|slurp|bing|yandex|baidu|duckduck|facebookexternal"
+        r"|preview|monitor|uptime|headless|python-requests|curl|wget|lighthouse",
+        re.I,
+    )
+
+    @app.before_request
+    def _track_visit():
+        # Only count genuine page views: GET requests to real pages.
+        if request.method != "GET":
+            return
+        p = request.path
+        if (p.startswith("/static/") or p.startswith("/admin")
+                or p.startswith("/api") or p.startswith("/.well-known")
+                or p in ("/favicon.ico", "/robots.txt", "/sitemap.xml")):
+            return
+        ua = request.headers.get("User-Agent", "")
+        if not ua or _BOT_UA.search(ua):
+            return
+        try:
+            fwd = request.headers.get("X-Forwarded-For", "")
+            ip = (fwd.split(",")[0].strip() if fwd else request.remote_addr) or ""
+            salt = app.config.get("SECRET_KEY", "")
+            # Store only a short salted hash — never the raw IP address.
+            visitor = hashlib.sha256(
+                "{}|{}|{}".format(ip, ua, salt).encode("utf-8")
+            ).hexdigest()[:16]
+            db.record_visit(p, visitor)
+        except Exception:
+            # Analytics must never break a page render.
+            pass
 
     # Make common values available to every template.
     @app.context_processor
@@ -430,6 +464,33 @@ def create_app():
         )
 
     # -- Admin ---------------------------------------------------------------
+    def _build_analytics(days=30):
+        """Assemble a continuous daily visitor series for the dashboard chart."""
+        daily = db.get_visits_daily(days)
+        today = datetime.utcnow().date()
+        series = []
+        for i in range(days - 1, -1, -1):
+            d = today - timedelta(days=i)
+            key = d.isoformat()
+            rec = daily.get(key, {"views": 0, "uniques": 0})
+            series.append({
+                "date": key,
+                "label": d.strftime("%d %b"),
+                "day": d.strftime("%d"),
+                "views": rec["views"],
+                "uniques": rec["uniques"],
+            })
+        totals = db.visit_totals()
+        peak = max((s["views"] for s in series), default=0)
+        return {
+            "series": series,
+            "totals": totals,
+            "days": days,
+            "peak": peak,
+            "week_views": sum(s["views"] for s in series[-7:]),
+            "week_uniques": sum(s["uniques"] for s in series[-7:]),
+        }
+
     def login_required(view):
         @wraps(view)
         def wrapped(*args, **kwargs):
@@ -473,6 +534,7 @@ def create_app():
     def admin():
         enquiries = db.get_enquiries()
         applications = db.get_applications()
+        analytics = _build_analytics(days=30)
         return render_template(
             "admin.html",
             enquiries=enquiries,
@@ -480,6 +542,7 @@ def create_app():
             applications=applications,
             gallery=_gallery_photos(),
             categories=GALLERY_CATEGORIES,
+            analytics=analytics,
         )
 
     @app.route("/admin/export.csv")

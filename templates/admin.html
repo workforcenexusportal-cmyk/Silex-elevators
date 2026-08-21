@@ -39,6 +39,86 @@
       </a>
     </div>
 
+    <!-- ===== Visitor analytics ===== -->
+    {% if analytics %}
+    {% set a = analytics %}
+    <div id="visitors" style="margin-top:44px">
+      <span class="eyebrow">Traffic</span>
+      <h2 class="section-title" style="font-size:clamp(1.5rem,2.6vw,2rem)">Website visitors</h2>
+      <p class="muted" style="margin-top:6px">Real page views over the last {{ a.days }} days · bots &amp; crawlers excluded · times in UTC.</p>
+    </div>
+
+    <div class="vis-cards mt-m">
+      <div class="vis-card">
+        <span class="vis-card__n">{{ "{:,}".format(a.totals.today) }}</span>
+        <span class="vis-card__l">Views today</span>
+      </div>
+      <div class="vis-card">
+        <span class="vis-card__n">{{ "{:,}".format(a.week_views) }}</span>
+        <span class="vis-card__l">Views · last 7 days</span>
+      </div>
+      <div class="vis-card">
+        <span class="vis-card__n">{{ "{:,}".format(a.totals.uniques) }}</span>
+        <span class="vis-card__l">Unique visitors · all time</span>
+      </div>
+      <div class="vis-card">
+        <span class="vis-card__n">{{ "{:,}".format(a.totals.total) }}</span>
+        <span class="vis-card__l">Total views · all time</span>
+      </div>
+    </div>
+
+    <div class="card reveal mt-m vis-chart">
+      <div class="vis-chart__legend">
+        <span><i class="dot dot--views"></i> Page views</span>
+        <span><i class="dot dot--uniques"></i> Unique visitors</span>
+        <span class="vis-chart__peak">Peak day: {{ a.peak }} view{{ '' if a.peak == 1 else 's' }}</span>
+      </div>
+      {% set n = a.series|length %}
+      {% set maxv = a.peak if a.peak > 0 else 1 %}
+      {% set W = 960 %}{% set H = 260 %}
+      {% set padX = 16 %}{% set padTop = 16 %}{% set padBot = 34 %}
+      {% set plotW = W - 2 * padX %}{% set plotH = H - padTop - padBot %}
+      {% set step = plotW / (n - 1) %}
+      {% set ns = namespace(v='', u='') %}
+      {% for s in a.series %}
+        {% set x = padX + loop.index0 * step %}
+        {% set yv = padTop + plotH - (s.views / maxv) * plotH %}
+        {% set yu = padTop + plotH - (s.uniques / maxv) * plotH %}
+        {% set ns.v = ns.v ~ (x|round(1))|string ~ ',' ~ (yv|round(1))|string ~ ' ' %}
+        {% set ns.u = ns.u ~ (x|round(1))|string ~ ',' ~ (yu|round(1))|string ~ ' ' %}
+      {% endfor %}
+      {% set baseY = (padTop + plotH)|round(1) %}
+      {% set areaPts = (padX|string) ~ ',' ~ (baseY|string) ~ ' ' ~ ns.v ~ ((padX + plotW)|round(1))|string ~ ',' ~ (baseY|string) %}
+      <svg class="vis-chart__svg" viewBox="0 0 {{ W }} {{ H }}" preserveAspectRatio="none" role="img" aria-label="Daily website visits for the last {{ a.days }} days">
+        <defs>
+          <linearGradient id="visFill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#AAC7D5" stop-opacity=".42"/>
+            <stop offset="1" stop-color="#AAC7D5" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        {% for g in range(0, 5) %}
+        {% set gy = (padTop + plotH * g / 4)|round(1) %}
+        <line x1="{{ padX }}" y1="{{ gy }}" x2="{{ W - padX }}" y2="{{ gy }}" stroke="rgba(170,199,213,.16)" stroke-width="1"/>
+        <text x="{{ padX }}" y="{{ (gy - 4)|round(1) }}" fill="rgba(223,235,247,.55)" font-size="11">{{ (maxv * (4 - g) / 4)|round|int }}</text>
+        {% endfor %}
+        <polygon points="{{ areaPts }}" fill="url(#visFill)"/>
+        <polyline points="{{ ns.u }}" fill="none" stroke="rgba(119,139,150,.85)" stroke-width="2" stroke-dasharray="4 4" stroke-linejoin="round"/>
+        <polyline points="{{ ns.v }}" fill="none" stroke="#5aa9d6" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+        {% for s in a.series %}
+        {% set x = (padX + loop.index0 * step)|round(1) %}
+        {% set yv = (padTop + plotH - (s.views / maxv) * plotH)|round(1) %}
+        <circle cx="{{ x }}" cy="{{ yv }}" r="2.6" fill="#5aa9d6"><title>{{ s.label }} — {{ s.views }} view{{ '' if s.views == 1 else 's' }}, {{ s.uniques }} visitor{{ '' if s.uniques == 1 else 's' }}</title></circle>
+        {% endfor %}
+        {% for s in a.series %}
+        {% if loop.index0 % 5 == 0 or loop.last %}
+        {% set x = (padX + loop.index0 * step)|round(1) %}
+        <text x="{{ x }}" y="{{ H - 12 }}" text-anchor="middle" fill="rgba(223,235,247,.6)" font-size="11">{{ s.label }}</text>
+        {% endif %}
+        {% endfor %}
+      </svg>
+    </div>
+    {% endif %}
+
     <div id="enquiries" style="margin-top:44px">
       <span class="eyebrow">Leads</span>
       <h2 class="section-title" style="font-size:clamp(1.5rem,2.6vw,2rem)">Enquiries <span style="color:var(--gold-dk)">({{ total }})</span></h2>
