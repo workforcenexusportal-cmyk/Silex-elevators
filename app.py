@@ -88,6 +88,7 @@ def create_app():
             "canonical_url": request.base_url,
             "social_links": content.SOCIAL_LINKS,
             "media": content.MEDIA,
+            "gallery_bg": content.GALLERY_BG,
             "scenes": content.SHOWROOM_SCENES,
         }
 
@@ -121,6 +122,10 @@ def create_app():
     @app.route("/products")
     def products():
         return render_template("products.html", products=content.PRODUCTS)
+
+    @app.route("/machines")
+    def machines():
+        return render_template("machines.html")
 
     @app.route("/products/<slug>")
     def product_detail(slug):

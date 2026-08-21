@@ -810,5 +810,95 @@
       if (host && !host.closest("a")) host.classList.add("zoomable");
     });
   })();
+
+  /* ---- Luxury motion · cursor, magnetic, tilt, ripple, hero light ------ */
+  (function () {
+    var finePointer = window.matchMedia("(pointer: fine)").matches;
+    var canMotion = finePointer && !reduceMotion;
+
+    /* Hero mouse-light — follows the pointer inside the hero */
+    var hero = doc.querySelector(".hero");
+    if (hero && !reduceMotion) {
+      if (!hero.querySelector(".hero__light")) {
+        var light = doc.createElement("div");
+        light.className = "hero__light";
+        hero.appendChild(light);
+      }
+      hero.addEventListener("pointermove", function (e) {
+        var r = hero.getBoundingClientRect();
+        hero.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+        hero.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+      }, { passive: true });
+    }
+
+    /* Ripple on every button */
+    doc.addEventListener("pointerdown", function (e) {
+      var btn = e.target.closest && e.target.closest(".btn");
+      if (!btn) return;
+      var r = btn.getBoundingClientRect();
+      var d = Math.max(r.width, r.height) * 2;
+      var rip = doc.createElement("span");
+      rip.className = "ripple";
+      rip.style.width = rip.style.height = d + "px";
+      rip.style.left = (e.clientX - r.left) + "px";
+      rip.style.top = (e.clientY - r.top) + "px";
+      btn.appendChild(rip);
+      window.setTimeout(function () { rip.remove(); }, 600);
+    });
+
+    if (!canMotion) return;   // cursor / magnet / tilt are desktop-only polish
+
+    /* Custom cursor — dot + trailing ring */
+    var dot = doc.createElement("div"); dot.className = "cur-dot";
+    var ring = doc.createElement("div"); ring.className = "cur-ring";
+    doc.body.appendChild(dot); doc.body.appendChild(ring);
+    doc.body.classList.add("has-cursor");
+    var mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    var rx = mx, ry = my, started = false;
+    window.addEventListener("pointermove", function (e) {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = "translate(" + mx + "px," + my + "px) translate(-50%,-50%)";
+      if (!started) { started = true; doc.body.classList.add("cursor-ready"); }
+    }, { passive: true });
+    (function ringLoop() {
+      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+      ring.style.transform = "translate(" + rx + "px," + ry + "px) translate(-50%,-50%)";
+      requestAnimationFrame(ringLoop);
+    })();
+    var HOVER = "a, button, .btn, input, textarea, select, [data-tilt], .pcard, .tile, summary";
+    doc.addEventListener("pointerover", function (e) {
+      if (e.target.closest && e.target.closest(HOVER)) doc.body.classList.add("cur-hover");
+    });
+    doc.addEventListener("pointerout", function (e) {
+      if (e.target.closest && e.target.closest(HOVER)) doc.body.classList.remove("cur-hover");
+    });
+    window.addEventListener("pointerdown", function () { doc.body.classList.add("cur-down"); });
+    window.addEventListener("pointerup", function () { doc.body.classList.remove("cur-down"); });
+    doc.addEventListener("mouseleave", function () { doc.body.classList.remove("cursor-ready"); });
+    doc.addEventListener("mouseenter", function () { doc.body.classList.add("cursor-ready"); });
+
+    /* Magnetic buttons — gentle pull toward the pointer */
+    doc.querySelectorAll(".btn--gold, .btn--navy, .nav__cta, [data-magnetic]").forEach(function (el) {
+      el.addEventListener("pointermove", function (e) {
+        var r = el.getBoundingClientRect();
+        var x = e.clientX - r.left - r.width / 2;
+        var y = e.clientY - r.top - r.height / 2;
+        el.style.transform = "translate(" + x * 0.25 + "px," + y * 0.35 + "px)";
+      });
+      el.addEventListener("pointerleave", function () { el.style.transform = ""; });
+    });
+
+    /* 3D tilt on flagged cards */
+    doc.querySelectorAll("[data-tilt]").forEach(function (el) {
+      el.addEventListener("pointermove", function (e) {
+        var r = el.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width - 0.5;
+        var py = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = "perspective(900px) rotateY(" + (px * 8) + "deg) rotateX(" +
+          (-py * 8) + "deg) translateZ(0)";
+      });
+      el.addEventListener("pointerleave", function () { el.style.transform = ""; });
+    });
+  })();
 })();
 
