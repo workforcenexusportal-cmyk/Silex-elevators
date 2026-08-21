@@ -17,6 +17,27 @@ def _img(pid, w=1600):
     )
 
 
+def _local(name):
+    """Path to a locally-hosted image under static/img."""
+    return f"/static/img/{name}"
+
+
+# Real Silex installation photography (dropped into static/img/gallery).
+# Used site-wide for section backgrounds so the whole site shows real work.
+GALLERY_BG = [
+    _local("gallery/03ebf07a2ac92cb0d03c9327b82739df.jpg.jpeg"),
+    _local("gallery/23ab50be82c1d835131283cf78f8565f.jpg.jpeg"),
+    _local("gallery/4030f4d7b55a37619bb1d269da5c0779.jpg.jpeg"),
+    _local("gallery/6c07f7f2357723f6340a12ab123755c1.jpg.jpeg"),
+    _local("gallery/6eb3a5d3bc51f3152b984c640163c662.jpg.jpeg"),
+    _local("gallery/7dde7951571f1e65e7ba8987cc55d86f.jpg.jpeg"),
+    _local("gallery/9a77e68667e68ff6f1e5cf46681bac93.jpg.jpeg"),
+    _local("gallery/b05604a186b2d299901e8dea2d940097.jpg.jpeg"),
+    _local("gallery/b24307517bb46aab1d479675cb8cbd69.jpg.jpeg"),
+    _local("gallery/e0576d929e078c566381149e6171a377.jpg.jpeg"),
+]
+
+
 # ---------------------------------------------------------------------------
 # Curated photography (real lift / elevator imagery, Unsplash CDN)
 # ---------------------------------------------------------------------------
@@ -34,15 +55,15 @@ PRODUCT_PHOTOS = {
     "hydraulic":        _img("1709942772983-e8e9c04ad50b"),  # hydraulic machinery
 }
 
-# Site-wide section imagery.
+# Site-wide section imagery — real Silex installation photography (gallery).
 MEDIA = {
-    "hero":          "/static/img/pexels-anoop1992-16856694.jpg.jpeg",  # Silex lift photography
-    "about":         _img("1735178181188-855a87e83dca"),        # warm gold lift doors
-    "cabin":         _img("1774294925489-68f75e2b3b05"),        # modern empty cabin
-    "doors":         _img("1665285255745-f1d9453d109c"),        # ornate luxury doors
-    "components":    _img("1709942772983-e8e9c04ad50b"),        # lift machinery
-    "technology":    _img("1595601265373-612a09303582"),        # futuristic glass shaft
-    "modernization": _img("1746702475459-89ff401cafd8"),        # warm wood cabin interior
+    "hero":          "/static/img/pexels-anoop1992-16856694.jpg.jpeg",  # panoramic glass lifts
+    "about":         GALLERY_BG[1],
+    "cabin":         GALLERY_BG[2],
+    "doors":         GALLERY_BG[3],
+    "components":    GALLERY_BG[4],
+    "technology":    GALLERY_BG[5],
+    "modernization": GALLERY_BG[6],
 }
 
 # Virtual showroom — cabin finishes & designs (horizontal gallery on Home).

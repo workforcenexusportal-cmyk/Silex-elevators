@@ -88,6 +88,7 @@ def create_app():
             "canonical_url": request.base_url,
             "social_links": content.SOCIAL_LINKS,
             "media": content.MEDIA,
+            "gallery_bg": content.GALLERY_BG,
             "scenes": content.SHOWROOM_SCENES,
         }
 

@@ -105,6 +105,68 @@
   </div>
 </section>
 
+<!-- MACHINES -->
+<section class="section section--ink" id="machines">
+  <div class="container">
+    <div class="head-center">
+      <span class="eyebrow">Powered By</span>
+      <h2 class="section-title">Machines</h2>
+      <p class="section-lead">Gearless traction machines from our trusted drive partners — engineered for silent, energy-smart, machine-room-less motion.</p>
+    </div>
+
+    {% set bbl_machines = [
+      {'name': 'GreenStar 12 Pole', 'img': 'greenstar-12-pole.png', 'cap': '6–13 passengers', 'spd': '1.0–1.25 m/s'},
+      {'name': 'GreenStar 18 Pole', 'img': 'greenstar-18-pole.png', 'cap': '15–26 passengers', 'spd': '1.0–2.0 m/s'},
+      {'name': 'GreenStar MAX', 'img': 'greenstar-max.png', 'cap': '1600–5000 kg', 'spd': '1.0–1.5 m/s'},
+      {'name': 'GreenStar Mini', 'img': 'greenstar-mini.png', 'cap': 'Up to 8 passengers', 'spd': '0.32–0.63 m/s'},
+      {'name': 'GreenStar 1:1', 'img': 'greenstar-1-1.png', 'cap': 'Up to 6 passengers', 'spd': '1.0 m/s'},
+      {'name': 'GreenStar BELT', 'img': 'greenstar-belt.png', 'cap': '6–20 passengers', 'spd': '1.0 m/s'}
+    ] %}
+
+    <!-- Bharat Bijlee -->
+    <div class="machine-brand reveal">
+      <div class="machine-brand__head">
+        <div>
+          <h3 class="machine-brand__name">Bharat Bijlee</h3>
+          <span class="machine-brand__tag">GreenStar® Gearless PMSM Series</span>
+        </div>
+        <span class="machine-brand__count">6 Machines</span>
+      </div>
+      <div class="machine-grid">
+        {% for m in bbl_machines %}
+        <article class="machine-card">
+          <div class="machine-card__media">
+            <img src="{{ url_for('static', filename='img/machines/bharat-bijlee/' ~ m.img) }}" alt="Bharat Bijlee {{ m.name }} gearless machine" loading="lazy">
+          </div>
+          <div class="machine-card__body">
+            <h4>{{ m.name }}</h4>
+            <div class="machine-card__meta">
+              <span>{{ icon('passenger') }}{{ m.cap }}</span>
+              <span>{{ icon('gauge') }}{{ m.spd }}</span>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Sharp (line-up coming soon) -->
+    <div class="machine-brand reveal">
+      <div class="machine-brand__head">
+        <div>
+          <h3 class="machine-brand__name">Sharp</h3>
+          <span class="machine-brand__tag">Traction Machines</span>
+        </div>
+        <span class="machine-brand__count machine-brand__count--soon">Coming soon</span>
+      </div>
+      <div class="machine-empty">
+        <span class="machine-empty__icon">{{ icon('cpu') }}</span>
+        <p>Sharp machine line-up will be added here soon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- BLOG · STAY LIFTED (two panels, horizontal scroll) -->
 <section class="section section--navy">
   <div class="container">
